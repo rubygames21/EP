@@ -14,6 +14,6 @@ public class Main {
         Client client = new Client();
         WebClient webClient = client.creatWebClient(BrowserVersion.CHROME,false,true,true);
         HtmlPage page = webClient.getPage(URL);
-        System.out.println(page.asXml());
+        
     }
 }
