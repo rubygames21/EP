@@ -6,11 +6,6 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class pollWebSiteClass {
-
-    public abstract HtmlPasswordInput getHtmlPasswordInput(HtmlPage p);
-    public abstract  HtmlButton getHtmlButton(HtmlPage p);
-    public abstract HtmlInput getHtmlInput(HtmlPage p);
-
     public HtmlPage login(HtmlInput email, String sEmail, HtmlPasswordInput password,
                           String sPwd, HtmlButton buttonLogin) throws IOException{
         email.type(sEmail);

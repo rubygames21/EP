@@ -28,9 +28,7 @@ public class Framadate extends pollWebSiteClass {
         this.page = page;
     }
 
-    public HtmlPasswordInput getHtmlPasswordInput(HtmlPage p){
-        return null;
-    }
+
     public String getBasedUrlOpen() {
         return basedUrlOpen;
     }
@@ -56,15 +54,7 @@ public class Framadate extends pollWebSiteClass {
         }
         return s;
     }
-    @Override
-    public HtmlButton getHtmlButton(HtmlPage p) {
-        return null;
-    }
 
-    @Override
-    public HtmlInput getHtmlInput(HtmlPage p) {
-        return null;
-    }
 
     //fonction qui à d'un WebCLien, d'un boolean qui dis si la page contient un mot de passe, du mot de passe , et d'un url d'un sondage
     //crée un fichier .csv qui contient l'export du site
