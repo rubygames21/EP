@@ -21,6 +21,12 @@ public class Framadate extends pollWebSiteClass {
 
     //hasn't password to vote and see results
     private final String basedUrlClose = "https://framadate.org/QgaAJfOmZzBae9Tb";
+
+    private final String noolde4 = "https://framadate.org/uQwNsZAckcnwauiE";
+
+    public String getNoolde4(){
+        return noolde4;
+    }
     public HtmlPage getPage() {
         return page;
     }
@@ -120,7 +126,6 @@ public class Framadate extends pollWebSiteClass {
                 //pour tout les nom de sa liste de nom on regarde si la ligne.substring(1) (car je crois
                 // quelle comence par \") commence par son nom dans ce cas on ecrit la ligne et on sort
                 for (String name : myAllName) {
-                    System.out.println(name.toLowerCase());
                     if (line.substring(1).startsWith(name.toLowerCase())) {
                         bf.write(line);
                         find = true;
