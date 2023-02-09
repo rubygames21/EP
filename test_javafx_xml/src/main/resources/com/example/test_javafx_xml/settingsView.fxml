@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.BorderPane?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.test_javafx_xml.ControllerSettings">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+    <ImageView>
+        <Image url="/bol_de_nouilles.png"/>
+    </ImageView>
+
+
+
+    <Label fx:id="titlePseudos" text="Liste de mes Pseudos Framadate"/>
+    <Label fx:id="welcomeText"/>
+    <TextField fx:id="pseudo1" text="" prefWidth="20.0"/>
+    <TextField fx:id="pseudo2" text="" prefWidth="20.0"/>
+    <TextField fx:id="pseudo3" text="" prefWidth="20.0"/>
+    <Button text="Réinitialiser" onMouseClicked="#clearProject1"/>
+    <Button text="Afficher liste pseudos" onMouseClicked="#listePseudosAction"/>
+    <Label fx:id="listePseudos"/>
+
+    <Label text="Voulez vous exporter tous vos calendriers en même temps?"/>
+
+    <RadioButton  text="Oui, tous ensemble" />
+    <RadioButton  text="Non, séparémment" />
+
+    <Button fx:id="getPolls" text="Répondre aux sondages" onMouseClicked="#getPollsAction"/>
+    <Label fx:id="pollsText"/>
+    <RadioButton fx:id="yes" text="Je suis là" visible="false"/>
+    <RadioButton fx:id="maybe" text="Peut-être" visible="false"/>
+    <RadioButton fx:id="no" text="Non je ne suis pas là" visible="false"/>
+
+    <Button fx:id="getNext" text="Suivant" visible="false" onMouseClicked="#getNextAction"/>
+    <Button fx:id="getPrev" text="Précédent" visible="false" onMouseClicked="#getPreviousAction"/>
+
+    <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+        <top>
+            <Button fx:id="nextPageButton" text="Page suivante" onMouseClicked="#changePageNext" BorderPane.alignment="BOTTOM_RIGHT"/>
+            <Button fx:id="prevPageButton" text="Retour" onMouseClicked="#changePagePrev" BorderPane.alignment="BOTTOM_LEFT"/>
+        </top>
+    </BorderPane>
+
+
+</VBox>
+
+
+
+
+
+

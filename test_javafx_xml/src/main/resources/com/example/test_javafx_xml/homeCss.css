@@ -1,0 +1,9 @@
+
+
+.settingButton{
+    -fx-background-color: #C0DFEF;
+    -fx-border-color: #C0DFEF;
+    -fx-cell-size: 25px;
+    -fx-font-size: 15px;
+    -fx-font-style: italic;
+}
