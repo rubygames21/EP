@@ -1,0 +1,36 @@
+BEGIN:VCALENDAR
+PRODID:-//Ben Fortuna//iCal4j 1.0//EN
+VERSION:2.0
+BEGIN:VEVENT
+DTSTAMP:20230215T211557Z
+DTSTART:20230601T120000
+DTEND:20230601T130000
+SUMMARY:Poll : mergeNoodle2 and you vote : Maybe and people who will be present : gaspard  and people who will maybe be present : nobody
+TZID:Europe/Paris
+UID:439063b1-48f6-4638-ad64-01e736622d13
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230215T211557Z
+DTSTART:20230601T130000
+DTEND:20230601T140000
+SUMMARY:Poll : mergeNoodle2 and you vote : Yes and people who will be present : nobody and people who will maybe be present : gaspard 
+TZID:Europe/Paris
+UID:15918132-5487-4606-8aab-1e1772b9c51a
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230215T211557Z
+DTSTART:20230602T125000
+DTEND:20230602T135000
+SUMMARY:Poll : mergeNoodle2 and you vote : Yes and people who will be present : nobody and people who will maybe be present : gaspard 
+TZID:Europe/Paris
+UID:bb4071fc-e411-47e4-bd95-0ee032726fa2
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230215T211557Z
+DTSTART:20230604T143000
+DTEND:20230604T153000
+SUMMARY:Poll : mergeNoodle2 and you vote : Yes and people who will be present : nobody and people who will maybe be present : gaspard 
+TZID:Europe/Paris
+UID:fc8a769a-0820-48b6-8c6e-e83d550754ae
+END:VEVENT
+END:VCALENDAR
