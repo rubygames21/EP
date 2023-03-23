@@ -1,4 +1,4 @@
-module com.example.test_javafx_xml {
+module com.example.noodelapp {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.mnode.ical4j.core;
