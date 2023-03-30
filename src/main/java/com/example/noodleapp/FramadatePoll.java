@@ -26,24 +26,17 @@ enum pollAnswer{
     Maybe
 }
 
-public class FramadatePoll {
+public class FramadatePoll extends Poll{
     //a revoir cette modélisation
     /* Map<String, Map<Props,pollAnswer>> data;*/
     //List des propostitions et des reponses associées
-    List<Props> props;
-    /*Map<String,pollAnswer> eachAnswer;*/
-    String name;
-    String title;
-    String url;
-    String ID;
+
 
     public FramadatePoll(String url){
         this.url = url;
     }
-    public FramadatePoll(){
 
-    }
-
+    public FramadatePoll(){}
 
     public void addProps(List<Props> p){
         for(Props prop:p){
@@ -276,7 +269,7 @@ public class FramadatePoll {
     }
 
     public void propsToICS(Set<String> names) {
-        File calendarICS = new File ("E:\\INSA\\3A\\EtudePratique\\Noodle\\NoodleApp\\"+ getPollID(url) + "_calendar.ics");
+        File calendarICS = new File ("/home/ubuntu/PERSO.local/INSA/3INFO/EP/"+ getPollID(url) + "_calendar.ics");
         if (!calendarICS.exists()) {
             try {
                 calendarICS.createNewFile();
