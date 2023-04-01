@@ -9,6 +9,20 @@ public class Props {
     Date date;
     Hour hour;
     Map<String ,pollAnswer > eachAnswer;
+    //propre à evento ? durée ou date début date fin
+    Hour hourEnd;
+
+    public Props() {
+    }
+
+    public Props(TimeZone timeZone, Date date, Hour hour, Hour hourEnd, Map<String, pollAnswer> eachAnswer) {
+        this.timeZone = timeZone;
+        this.date = date;
+        this.hour = hour;
+        this.hourEnd = hourEnd;
+        this.eachAnswer = eachAnswer;
+
+    }
 
     public static class Date {
         int month;
@@ -24,12 +38,30 @@ public class Props {
 
                     '}';
         }
+
+        public Date() {
+        }
+
+        public Date(int month, int day, int year) {
+            this.month = month;
+            this.day = day;
+            this.year = year;
+        }
     }
 
     public static class Hour {
         int hour;
         int minute;
         int second;
+
+        public Hour() {
+        }
+
+        public Hour(int hour, int minute, int second) {
+            this.hour = hour;
+            this.minute = minute;
+            this.second = second;
+        }
 
         @Override
         public String toString() {
@@ -46,6 +78,7 @@ public class Props {
         return "Props{" +
                 date.toString()+
                 hour.toString()+
+                hourEnd.toString()+
                 eachAnswer.toString()+
                 '}';
     }

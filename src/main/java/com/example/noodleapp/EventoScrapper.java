@@ -14,18 +14,17 @@ public class EventoScrapper extends Scrapper{
 
     String name; //format "Prenom Nom"
     String email;
-    Set<String> listRep;
-    //List<Poll> evento;
+    Set<String> listRep; //list of all the ID of the polls
+    List<Poll> evento;
 
     public EventoScrapper() {
-        // nom et email pas encore trouvés
         name = null;
         email = null;
-        listRep  = new HashSet<>(); //initialiser la liste d'ID
+        listRep  = new HashSet<>(); //initialize ID list
         //evento = new ArrayList<>();
     }
 
-    public void connect(WebClient client,String user, String pass, String organization) throws Exception {
+    public void connect(WebClient client,String user, String pass, String organization) throws Exception,NullPointerException {
         client.getOptions().setJavaScriptEnabled(true); // nécessaire pour la liste automatique de sélection d'établissement
 
         HtmlPage page = client.getPage("https://evento.renater.fr/Shibboleth.sso/Login?target=https%3A%2F%2Fevento.renater.fr%2Fhome");
@@ -36,7 +35,12 @@ public class EventoScrapper extends Scrapper{
 
         // Clique le champ de saisie "Veuillez saisir l'établissement auquel vous appartenez."
         HtmlElement el = page.getFirstByXPath("//*[@id='select2-userIdPSelection-container']/span/div/div[2]");
-        page = el.click();
+        try {
+            page = el.click();
+        } catch (NullPointerException e) {
+            System.out.println("bug"); //bug who crash the program (1 times over 3)
+            return;
+        }
         // Maintenant la liste déroulante est ouverte, et le champ de saisie interactive est vierge
 
         // On tape les infos du nom d'établissement dans le champ de saisie
@@ -94,7 +98,7 @@ public class EventoScrapper extends Scrapper{
         }
     }
 
-    public void getPools(WebClient client) throws Exception{
+    public void getPools(WebClient client) throws Exception,NullPointerException{
         // ALLER A LA PAGE DES SONDAGES
         HtmlPage page = client.getPage("https://evento.renater.fr/survey/manage#invitedto");
         String[] tempTab = StringUtils.substringsBetween(page.asNormalizedText(), " - ", "Last update of the organiser");
@@ -102,76 +106,99 @@ public class EventoScrapper extends Scrapper{
             String id = StringUtils.substringAfterLast(s," ");
             listRep.add(id); // Liste de tout les id des réunions
         }
-
-        for(String reuID : listRep) { //pour tout les sondages repondus
+        String temp = "";
+        for(String reuID : listRep) { //for all the survey answered
             page = client.getPage("https://evento.renater.fr/survey/results/" + reuID); //recup la page en fonction de l'ID
-            String temp = StringUtils.substringBetween(page.asNormalizedText(), "Export results to CSV", "×");
+            try {
+                temp = StringUtils.substringBetween(page.asNormalizedText(), "Export results to CSV", "×");
+            } catch (NullPointerException e) {
+                temp = "";
+            }
+            EventoPoll poll = new EventoPoll();
             if (temp.startsWith("\nThis Evento is closed")) {
-                //POOL CLOSED
+                //CASE : POOL CLOSED
 
-                //System.out.println(page.asXml());
+                //ID, URL & NAME
+                poll.ID=reuID;
+                poll.url=("https://evento.renater.fr/survey/results/" + reuID);
+                poll.name = name; // don't think it's important
 
                 //get closed date
-                long timeClosed = Long.parseLong(StringUtils.substringBetween(page.asXml(), "<span data-timestamp=\"", "\""));
+                //long timeClosed = Long.parseLong(StringUtils.substringBetween(page.asXml(), "<span data-timestamp=\"", "\""));
+
                 //get start and finish date
                 temp = StringUtils.substringBetween(page.asXml(),"Selected final answer :","</section>");
                 long timeStart = Long.parseLong(StringUtils.substringBetween(temp,"span data-timestamp=\"","\""));
                 temp = StringUtils.substringBetween(temp,"</span>","data-localize=\"time\">");
                 long timeFinish = Long.parseLong(StringUtils.substringBetween(temp,"span data-timestamp=\"","\""));
 
+                // ADD TO A PROP
+                Props prop = new Props(null,tsToDate(timeStart),tsToHour(timeStart),tsToHour(timeFinish),null);
+                // date finish ? : case if the meeting during more than 1 day
 
                 //get name of the pool
                 temp = StringUtils.substringBetween(page.asXml(),"class=\"survey_title\">","<span class=\"help-text\">");
-                String poolTitle = temp.trim();
+                poll.title = temp.trim();
 
                 //get organizer of the pool
                 temp = StringUtils.substringBetween(page.asXml(),"(Organized by : ",")");
-                String poolOrganizer = temp.trim();
+                poll.organizer = temp.trim();
 
                 //get description of the pool
                 temp = StringUtils.substringBetween(page.asXml(),"class=\"survey-description\"","</article>");
-                String poolDesc = StringUtils.substringBetween(temp,"<p>","</p>").trim();
+                poll.description = StringUtils.substringBetween(temp,"<p>","</p>").trim();
 
-                //HtmlElement button = (HtmlElement) page.getByXPath("/html/body/main/section/section[4]/section/section[1]/span").get(0);
-                //page = button.click();
+                System.out.println(prop.date + " " + prop.hour + " " + prop.hourEnd);
+                System.out.println(poll.description + " " + poll.title + " " + poll.organizer);
 
-                //System.out.println(page.asXml());
-                //temp = StringUtils.substringBetween(page.asXml(),String.valueOf(timeStart),"</html>");
+                // organizer
+                if(!poll.organizer.equals(this.name)) {
+                    // I assume that the organizer participates in the meeting that he creates himself so if organizer = name of the account we keep the date of the answer directly
+                    client.getOptions().setCssEnabled(true);
+                    client.getOptions().setJavaScriptEnabled(true);
+                    page = client.getPage("https://evento.renater.fr/survey/results/" + reuID); // refresh
+                    client.waitForBackgroundJavaScript(60_000);
+                    HtmlElement button = (HtmlElement) page.getFirstByXPath("/html/body/main/section/section[4]/section/section[1]/span");
+                    page = button.click();
 
-                //LIEN !!!!
+
+                    System.out.println(page.asXml());
+                    break;
+                    //temp = StringUtils.substringBetween(page.asXml(),String.valueOf(timeStart),"</html>");
+
+                }
+
 
             } else {
                 //OPEN
                 //TODO
             }
         }
-        //for(Poll sondage : evento) System.out.println(sondage);
 
 
     }
 
 
-    // RECUPERER LE NOMBRE DE SONDAGES REPONDUS
-    public void getNumberPools(WebClient client) throws Exception{
+    // Get the number of polls answered
+    public int getNumberPolls(WebClient client) throws Exception{
         HtmlPage page = client.getPage("https://evento.renater.fr/survey/manage#invitedto");
-        int nbSondagesRep = Integer.parseInt(StringUtils.substringBetween(page.asNormalizedText(), "Answered (", ")"));
-        System.out.println("Sondages repondus : "+nbSondagesRep);
+        return Integer.parseInt(StringUtils.substringBetween(page.asNormalizedText(), "Answered (", ")"));
     }
 
     public void getNameEmail(WebClient client) throws Exception {
         HtmlPage page = client.getPage("https://evento.renater.fr/user");
         for ( HtmlElement el : page.getHtmlElementDescendants() ) {
             if (el instanceof HtmlSection)
-                if (el.toString().contains("row user-info")) { //petite triche mais fonctionne
+                if (el.toString().contains("row user-info")) { //little cheat but works
                     Iterator<HtmlElement> it = el.getHtmlElementDescendants().iterator();
                     while( it.hasNext()) {
                         HtmlElement child = it.next();
                         if (child instanceof HtmlLabel) {
                             String label = child.asNormalizedText();
                             if (label.startsWith("Name"))
-                                name = it.next().asNormalizedText(); //stocker le nom
+                                name = it.next().asNormalizedText(); //get the name
                             else if (label.startsWith("Email"))
-                                email = it.next().asNormalizedText(); //stocker le mail
+                                email = it.next().asNormalizedText(); //get the email
                         }
                     }
                 }
@@ -196,21 +223,33 @@ public class EventoScrapper extends Scrapper{
         }
     }
 
+    public Props.Date tsToDate(long ts){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(ts*1000));
+        return new Props.Date(calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.YEAR));
+    }
+
+    public Props.Hour tsToHour(long ts){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(ts*1000));
+        return new Props.Hour(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
+    }
+
     @Override
     public void createICS(WebClient wb) throws IOException {
         //TODO
     }
 
     public static void main(String[] args) throws Exception{
-        // ENLEVER LES WARNINGS HTMLUNIT
+        // remove warnings of Htmlunit
         java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
 
-        // INITIALISER LE CLIENT
+        // Initialize the client
         WebClient client= new WebClient(BrowserVersion.CHROME);
         client.getOptions().setCssEnabled(false);
-        client.getOptions().setJavaScriptEnabled(true); // activer javascript
+        client.getOptions().setJavaScriptEnabled(true);
         client.getOptions().setUseInsecureSSL(true);
-        client.getOptions().setThrowExceptionOnScriptError(false); //enlever les erreurs javascript
+        client.getOptions().setThrowExceptionOnScriptError(false); // remove javascript errors
         EventoScrapper e = new EventoScrapper();
         e.connect(client,"atharrea","fdqj8t,\\g(","INSA Rennes");
         e.getNameEmail(client);
