@@ -26,16 +26,7 @@ enum pollAnswer{
     Maybe
 }
 
-public class FramadatePoll {
-    //a revoir cette modélisation
-    /* Map<String, Map<Props,pollAnswer>> data;*/
-    //List des propostitions et des reponses associées
-    List<Props> props;
-    /*Map<String,pollAnswer> eachAnswer;*/
-    String name;
-    String title;
-    String url;
-    String ID;
+public class FramadatePoll extends Poll {
 
     public FramadatePoll(String url){
         this.url = url;
