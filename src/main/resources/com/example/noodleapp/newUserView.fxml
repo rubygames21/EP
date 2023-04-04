@@ -32,6 +32,13 @@
         <Label fx:id="eventoCASLabel" layoutX="80.0" layoutY="247.0" text="CAS" visible="false" />
         <ChoiceBox fx:id="eventoCASChoiceBox" layoutX="180.0" layoutY="243.0" prefWidth="150.0" visible="false" />
         <Label fx:id="framadateURLLabel" layoutX="80.0" layoutY="177.0" text="URL" visible="false" />
+        <Label fx:id="framadateNameLabel" layoutX="80.0" layoutY="212.0" text="Name" visible="false" />
         <TextField fx:id="framadateURLText" layoutX="180.0" layoutY="173.0" visible="false" />
+        <TextField fx:id="framadateNameText" layoutX="180.0" layoutY="208.0" visible="false" />
+        <Button fx:id="framadateSubmitURL" layoutX="400.0" layoutY="173.0" mnemonicParsing="false" onAction="#framadateSubmitURL" text="Submit" visible="false" />
+        <Button fx:id="framadateSubmitName" layoutX="400.0" layoutY="208.0" mnemonicParsing="false" onAction="#framadateSubmitName" text="Submit" visible="false" />
+        <Label fx:id="confirmation" layoutX="272.0" layoutY="250.0" visible="false" />
+        <RadioButton fx:id="mergeButton" layoutX="250.0" layoutY="280.0" mnemonicParsing="false" onAction="#setBoolMergeYes" text="Merge agendas" visible="false" />
+        <Button fx:id="icsButton" layoutX="272.0" layoutY="316.0" mnemonicParsing="false" onAction="#createICS" text="Confirm" visible="false" />
     </children>
 </AnchorPane>

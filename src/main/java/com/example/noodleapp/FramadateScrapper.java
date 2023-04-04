@@ -71,6 +71,16 @@ public class FramadateScrapper extends Scrapper {
             }
         }
     }
+
+    // pour recuperer les url
+    public String toString() {
+        String res = "(";
+        for (FramadatePoll f : fpolls) {
+            res += f.url + " ";
+        }
+        res += ")";
+        return res;
+    }
 }
 
     /*public static void main(String[] args) throws IOException {
