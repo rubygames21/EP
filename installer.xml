@@ -1,0 +1,47 @@
+<installation version="5.0">
+
+    <info>
+        <appname>NoodleApp</appname>
+        <appversion>1.0.0</appversion>
+        <appsubpath>NoodleAppDir</appsubpath>
+    </info>
+
+    <guiprefs width="600" height="400" resizable="yes">
+        <modifier key="HelloPanel" name="com.izforge.izpack.panels.HelloPanel" value="com.izforge.izpack.panels.hello.HelloPanel"/>
+        <modifier key="TargetPanel" name="com.izforge.izpack.panels.TargetPanel" value="com.izforge.izpack.panels.target.TargetPanel"/>
+        <modifier key="InstallPanel" name="com.izforge.izpack.panels.InstallPanel" value="com.izforge.izpack.panels.packs.PacksPanel"/>
+        <modifier key="SimpleFinishPanel" name="com. izforge.izpack.panels.SimpleFinishPanel" value="com.izforge.izpack.panels.simplefinish.SimpleFinishPanel"/>
+        <locale>
+            <langpack iso3="eng" />
+        </locale>
+    </guiprefs>
+
+    <panels>
+        <panel classname="HelloPanel" />
+        <panel classname="TargetPanel" />
+        <panel classname="InstallPanel" />
+        <panel classname="SimpleFinishPanel" />
+    </panels>
+
+    <packs>
+
+        <!-- Pack principal -->
+        <pack name="Mon application" required="yes">
+            <description>Ce pack contient les fichiers principaux de Mon application.</description>
+            <file src="out/artifacts/EP_jar/EP.jar" targetdir="$INSTALL_PATH"/>
+            <!-- Ajouter d'autres fichiers ou répertoires si nécessaire -->
+            <createcheck dir="$INSTALL_PATH" type="nonexistent"/>
+        </pack>
+
+        <!-- Pack JVM -->
+        <pack name="JVM" required="yes">
+            <description>Ce pack contient la JVM nécessaire à l'exécution de Mon application.</description>
+            <file src="jdk/" targetdir="$INSTALL_PATH/jre"/>
+            <!-- Remplacer le chemin vers la JVM appropriée -->
+            <createcheck dir="$INSTALL_PATH/jre/bin" type="file"/>
+        </pack>
+
+    </packs>
+
+
+</installation>
