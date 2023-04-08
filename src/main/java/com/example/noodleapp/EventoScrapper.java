@@ -29,7 +29,6 @@ public class EventoScrapper extends Scrapper{
     String email;
     Set<String> listRep; //list of all the ID of the polls
     List<EventoPoll> evento;
-    private static final int MAXPROPS = 100;
 
     public EventoScrapper() {
         name = null;
@@ -119,7 +118,7 @@ public class EventoScrapper extends Scrapper{
 
         // each answer always NO
         Map<String, pollAnswer> noAnswer= new HashMap<>();
-        yesAnswer.put(name, pollAnswer.No);
+        noAnswer.put(name, pollAnswer.No);
 
 
         // TIMEZONE = GMT+0 (London)
@@ -164,6 +163,7 @@ public class EventoScrapper extends Scrapper{
             poll.description = StringUtils.substringBetween(temp,"<p>","</p>").trim();
 
             poll.numberParticipant = Integer.parseInt(StringUtils.substringBetween(page.asXml(),"<td class=\"first\">"," Participant(s)").trim());
+            System.out.println("TEST : " + poll.numberParticipant);
 
             try {
                 temp = StringUtils.substringBetween(page.asNormalizedText(), "Export results to CSV", "×");
@@ -222,7 +222,7 @@ public class EventoScrapper extends Scrapper{
                     temp3 = StringUtils.substringBetween(temp2,"-"," data-localize=\"time\">");
                     long timeFinish = Long.parseLong(StringUtils.substringBetween(temp3,"\"","\""));
 
-                    System.out.println("TESTING : " + tsToDate(timeStart) + " " + tsToHour(timeStart) + " " + tsToHour(timeFinish));
+                    //System.out.println("TESTING : " + tsToDate(timeStart) + " " + tsToHour(timeStart) + " " + tsToHour(timeFinish));
 
                     //if organizer = name of the user -> get all the props : YES
                     if(poll.organizer.equals(this.name)) {
@@ -306,7 +306,7 @@ public class EventoScrapper extends Scrapper{
 
     @Override
     public void createICS(WebClient wb) throws IOException {
-        File calendarICS = new File ("C:\\Users\\HDrag\\Documents\\GitHub\\EP"+ "evento_calendar.ics");
+        File calendarICS = new File ("C:\\Users\\HDrag\\Documents\\GitHub\\EP\\"+ "evento_calendar.ics");
         if (!calendarICS.exists()) {
             try {
                 calendarICS.createNewFile();
@@ -314,7 +314,7 @@ public class EventoScrapper extends Scrapper{
                 e.printStackTrace();
             }
         }
-        /*
+
         try {
             FileWriter writer = new FileWriter(calendarICS);
             BufferedWriter bw = new BufferedWriter(writer);
@@ -325,40 +325,84 @@ public class EventoScrapper extends Scrapper{
             TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
             net.fortuna.ical4j.model.TimeZone timezone = registry.getTimeZone("Europe/Paris");
             VTimeZone tz = timezone.getVTimeZone();
-            for (Props props : props) {
-                if(getMyVote(props,names)!=pollAnswer.No&&getMyVote(props,names)!=null){
-                    Calendar startDate = createStartDate(props);
-                    Calendar endDate = createEndDate(props);
-                    String allPresentParticipant = getAllPresentParticipant(props,names);
-                    if(allPresentParticipant.isEmpty()){
-                        allPresentParticipant = "nobody";
+            for(EventoPoll ev : evento) {
+                for (Props props : ev.props) {
+                    System.out.println("TESTING : " + getMyVote(props.eachAnswer));
+                    if (getMyVote(props.eachAnswer) != pollAnswer.No && getMyVote(props.eachAnswer) != null) {
+                        Calendar startDate = createStartDate(props);
+                        Calendar endDate = createEndDate(props);
+
+                        //TODO : get other participants
+
+                        String eventName = ("Poll : " + ev.title +
+                                " and you vote : " + getMyVote(props.eachAnswer) +
+                                " organized by : " + ev.organizer +
+                                " who is \"" + ev.description +
+                                "\" with " + ev.numberParticipant +
+                                " Participant(s). ");
+                        if (ev.closed) {
+                            eventName += "This poll is closed !";
+                        } else {
+                            eventName += "This poll is still open !";
+                        }
+                        DateTime start = new DateTime(startDate.getTime());
+                        DateTime end = new DateTime(endDate.getTime());
+                        VEvent meeting = new VEvent(start, end, eventName);
+                        meeting.getProperties().add(tz.getTimeZoneId());
+                        UidGenerator ug = new RandomUidGenerator();
+                        Uid uid = ug.generateUid();
+                        meeting.getProperties().add(uid);
+                        calendar.getComponents().add(meeting);
                     }
-                    String allMaybePresentParticipant = getAllMaybePresentParticipant(props,names);
-                    if(allMaybePresentParticipant.isEmpty()){
-                        allMaybePresentParticipant = "nobody";
-                    }
-                    //pourquoi je ne peut pas mettre de , ?
-                    String eventName = ("Poll : " + this.title + " and you vote : " + getMyVote(props,names) + " and people who will be present : " + allPresentParticipant + " and people who will maybe be present : " + allMaybePresentParticipant);
-                    DateTime start = new DateTime(startDate.getTime());
-                    DateTime end = new DateTime(endDate.getTime());
-                    VEvent meeting = new VEvent(start, end, eventName);
-                    meeting.getProperties().add(tz.getTimeZoneId());
-                    UidGenerator ug = new RandomUidGenerator();
-                    Uid uid = ug.generateUid();
-                    meeting.getProperties().add(uid);
-                    calendar.getComponents().add(meeting);
                 }
             }
             bw.write(calendar.toString());
             bw.close();
             writer.close();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-         */
     }
+
+
+    public pollAnswer getMyVote(Map<String ,pollAnswer> eachAnswer) {
+        for(String a : eachAnswer.keySet()) {
+            if(a.equals(name)) {
+                return eachAnswer.get(a);
+            }
+        }
+        return pollAnswer.No;
+    }
+
+    //TODO : regrouper ces 2 fonctions en une
+    public Calendar createStartDate(Props props){
+        Calendar date = new GregorianCalendar();
+        date.setTimeZone(props.timeZone);
+        //add Date
+        date.set(Calendar.MONTH, props.date.month-1 );
+        date.set(Calendar.DAY_OF_MONTH, props.date.day);
+        date.set(Calendar.YEAR, props.date.year);
+        //add Hour
+        date.set(Calendar.HOUR_OF_DAY, props.hour.hour);
+        date.set(Calendar.MINUTE, props.hour.minute);
+        date.set(Calendar.SECOND, props.hour.second);
+        return date;
+    }
+
+    public Calendar createEndDate(Props props){
+        Calendar date = new GregorianCalendar();
+        date.setTimeZone(props.timeZone);
+        //add Date
+        date.set(Calendar.MONTH, props.date.month-1 );
+        date.set(Calendar.DAY_OF_MONTH, props.date.day);
+        date.set(Calendar.YEAR, props.date.year);
+        //add Hour
+        date.set(Calendar.HOUR_OF_DAY, props.hour.hour+1);
+        date.set(Calendar.MINUTE, props.hour.minute);
+        date.set(Calendar.SECOND, props.hour.second);
+        return date;
+    }
+
 
     public static void main(String[] args) throws Exception{
         // remove warnings of Htmlunit
@@ -374,6 +418,7 @@ public class EventoScrapper extends Scrapper{
         e.connect(client,"atharrea","fdqj8t,\\g(","INSA Rennes");
         e.getNameEmail(client);
         e.getPolls(client);
+        e.createICS(client);
         client.close();
     }
 
