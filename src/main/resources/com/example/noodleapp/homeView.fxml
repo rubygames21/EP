@@ -30,23 +30,17 @@
 
 
     <center>
-        <Label fx:id="Noodle"  text="NOODLE" style="-fx-font-family: Arial; -fx-font-size: 40px;"/>
-        <ScrollPane prefHeight="200.0" prefWidth="200.0">
-            <content>
-                <VBox prefHeight="200.0" prefWidth="180.0" spacing="10.0" padding="10.0">
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                    <Label text="Liste des personnes"/>
-                </VBox>
-            </content>
-        </ScrollPane>
+        <VBox fx:id="centerVBox" spacing="10.0" BorderPane.alignment="CENTER" alignment="CENTER">
+            <Label fx:id="Noodle" text="NOODLE" style="-fx-font-size: 18; "/>
+            <ListView fx:id="listViewFramadate"  prefHeight="70.0"/>
+            <ListView fx:id="listViewEvento" prefHeight="70.0"/>
+            <ListView fx:id="listViewDoodle"  prefHeight="70.0"/>
+
+
+        </VBox>
+
     </center>
+
 
 
 </BorderPane>
