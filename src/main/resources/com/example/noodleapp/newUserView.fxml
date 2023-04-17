@@ -1,44 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.noodleapp.NewUserController">
-    <children>
-        <Label layoutX="258.0" layoutY="50.0" text="New User">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Label>
-        <Button fx:id="backButton" layoutX="520.0" layoutY="350.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
-        <RadioButton fx:id="doodleButton" layoutX="51.0" layoutY="112.0" mnemonicParsing="false" onAction="#getInfos" text="Doodle">
-            <toggleGroup>
-                <ToggleGroup fx:id="poll_websites" />
-            </toggleGroup>
-        </RadioButton>
-        <RadioButton fx:id="eventoButton" layoutX="269.0" layoutY="112.0" mnemonicParsing="false" onAction="#getInfos" text="Evento" toggleGroup="$poll_websites" />
-        <RadioButton fx:id="framadateButton" layoutX="468.0" layoutY="112.0" mnemonicParsing="false" onAction="#getInfos" text="Framadate" toggleGroup="$poll_websites" />
-        <Label fx:id="loginLabel" layoutX="80.0" layoutY="177.0" text="Login" visible="false" />
-        <Label fx:id="passwordLabel" layoutX="80.0" layoutY="212.0" text="Password" visible="false" />
-        <TextField fx:id="loginText" layoutX="180.0" layoutY="173.0" visible="false" />
-        <TextField fx:id="passwordText" layoutX="180.0" layoutY="208.0" visible="false" />
-        <Button fx:id="submitButton" layoutX="272.0" layoutY="316.0" mnemonicParsing="false" onAction="#submit" text="Submit" visible="false" />
-        <Label fx:id="eventoCASLabel" layoutX="80.0" layoutY="247.0" text="CAS" visible="false" />
-        <ChoiceBox fx:id="eventoCASChoiceBox" layoutX="180.0" layoutY="243.0" prefWidth="150.0" visible="false" />
-        <Label fx:id="framadateURLLabel" layoutX="80.0" layoutY="177.0" text="URL" visible="false" />
-        <Label fx:id="framadateNameLabel" layoutX="80.0" layoutY="212.0" text="Name" visible="false" />
-        <TextField fx:id="framadateURLText" layoutX="180.0" layoutY="173.0" visible="false" />
-        <TextField fx:id="framadateNameText" layoutX="180.0" layoutY="208.0" visible="false" />
-        <Button fx:id="framadateSubmitURL" layoutX="400.0" layoutY="173.0" mnemonicParsing="false" onAction="#framadateSubmitURL" text="Submit" visible="false" />
-        <Button fx:id="framadateSubmitName" layoutX="400.0" layoutY="208.0" mnemonicParsing="false" onAction="#framadateSubmitName" text="Submit" visible="false" />
-        <Label fx:id="confirmation" layoutX="272.0" layoutY="250.0" visible="false" />
-        <RadioButton fx:id="mergeButton" layoutX="250.0" layoutY="280.0" mnemonicParsing="false" onAction="#setBoolMergeYes" text="Merge agendas" visible="false" />
-        <Button fx:id="icsButton" layoutX="272.0" layoutY="316.0" mnemonicParsing="false" onAction="#createICS" text="Confirm" visible="false" />
-    </children>
-</AnchorPane>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.noodleapp.NewUserController"
+            prefHeight="400.0" prefWidth="600.0">
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu fx:id="file" text="File">
+                    <items>
+                        <MenuItem fx:id="menuNewUser" text="Add New User" />
+                        <MenuItem fx:id="menuDoodle" text="Doodle" />
+                        <MenuItem fx:id="menuEvento" text="Evento" />
+                        <MenuItem fx:id="menuFramadate" text="Framadate"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="myExport" text="A propos">
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
+            <Button fx:id="backButton" onAction="#goBack" text="Back" />
+        </HBox>
+    </bottom>
+    <center>
+        <VBox alignment="CENTER" spacing="10.0">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
+            <HBox alignment="CENTER" spacing="20.0" >
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <RadioButton fx:id="doodleButton" onAction="#getInfos" text="Doodle">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="poll_websites" />
+                    </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="eventoButton" onAction="#getInfos" text="Evento" toggleGroup="$poll_websites" />
+                <RadioButton fx:id="framadateButton" onAction="#getInfos" text="Framadate" toggleGroup="$poll_websites" />
+            </HBox>
+            <Label fx:id="loginLabel" text="Login" visible="false" />
+            <TextField fx:id="loginText" visible="false" />
+            <Label fx:id="passwordLabel" text="Password" visible="false" />
+            <TextField fx:id="passwordText" visible="false" />
+            <Label fx:id="eventoCASLabel" text="CAS" visible="false" />
+            <ChoiceBox fx:id="eventoCASChoiceBox" prefWidth="150.0" visible="false" />
+            <Button fx:id="submitButton" onAction="#submit" text="Submit" visible="false" />
+            <Label fx:id="framadateURLLabel" text="URL" visible="false" />
+            <HBox alignment="CENTER" spacing="10.0">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <TextField fx:id="framadateURLText" visible="false" />
+                <Button fx:id="framadateSubmitURL" onAction="#framadateSubmitURL" text="Submit" visible="false" />
+            </HBox>
+            <Label fx:id="framadateNameLabel" text="Name" visible="false" />
+            <HBox alignment="CENTER" spacing="10.0">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <TextField fx:id="framadateNameText" visible="false" />
+                <Button fx:id="framadateSubmitName" onAction="#framadateSubmitName" text="Submit" visible="false" />
+            </HBox>
+            <Label fx:id="confirmation" visible="false" />
+            <RadioButton fx:id="mergeButton" onAction="#setBoolMergeYes" text="Merge agendas" visible="false" />
+            <Button fx:id="icsButton" onAction="#createICS" text="Confirm" visible="false" />
+        </VBox>
+    </center>
+</BorderPane>
+
+            <!--
+            <?import javafx.scene.control.Button?>
+            <?import javafx.scene.control.ChoiceBox?>
+            <?import javafx.scene.control.Label?>
+            <?import javafx.scene.control.RadioButton?>
+            <?import javafx.scene.control.TextField?>
+            <?import javafx.scene.control.ToggleGroup?>
+            <?import javafx.scene.layout.AnchorPane?>
+            <?import javafx.scene.text.Font?>
+
+            <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.noodleapp.NewUserController">
+                <children>
+                    <Label layoutX="258.0" layoutY="50.0" text="New User">
+                        <font>
+                            <Font size="20.0" />
+                        </font>
+                    </Label>
+                    <Button fx:id="backButton" layoutX="520.0" layoutY="350.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
+                    <RadioButton fx:id="doodleButton" layoutX="51.0" layoutY="112.0" mnemonicParsing="false" onAction="#getInfos" text="Doodle">
+                        <toggleGroup>
+                            <ToggleGroup fx:id="poll_websites" />
+                        </toggleGroup>
+                    </RadioButton>
+                    <RadioButton fx:id="eventoButton" layoutX="269.0" layoutY="112.0" mnemonicParsing="false" onAction="#getInfos" text="Evento" toggleGroup="$poll_websites" />
+                    <RadioButton fx:id="framadateButton" layoutX="468.0" layoutY="112.0" mnemonicParsing="false" onAction="#getInfos" text="Framadate" toggleGroup="$poll_websites" />
+                    <Label fx:id="loginLabel" layoutX="80.0" layoutY="177.0" text="Login" visible="false" />
+                    <Label fx:id="passwordLabel" layoutX="80.0" layoutY="212.0" text="Password" visible="false" />
+                    <TextField fx:id="loginText" layoutX="180.0" layoutY="173.0" visible="false" />
+                    <TextField fx:id="passwordText" layoutX="180.0" layoutY="208.0" visible="false" />
+                    <Button fx:id="submitButton" layoutX="272.0" layoutY="316.0" mnemonicParsing="false" onAction="#submit" text="Submit" visible="false" />
+                    <Label fx:id="eventoCASLabel" layoutX="80.0" layoutY="247.0" text="CAS" visible="false" />
+                    <ChoiceBox fx:id="eventoCASChoiceBox" layoutX="180.0" layoutY="243.0" prefWidth="150.0" visible="false" />
+                    <Label fx:id="framadateURLLabel" layoutX="80.0" layoutY="177.0" text="URL" visible="false" />
+                    <Label fx:id="framadateNameLabel" layoutX="80.0" layoutY="212.0" text="Name" visible="false" />
+                    <TextField fx:id="framadateURLText" layoutX="180.0" layoutY="173.0" visible="false" />
+                    <TextField fx:id="framadateNameText" layoutX="180.0" layoutY="208.0" visible="false" />
+                    <Button fx:id="framadateSubmitURL" layoutX="400.0" layoutY="173.0" mnemonicParsing="false" onAction="#framadateSubmitURL" text="Submit" visible="false" />
+                    <Button fx:id="framadateSubmitName" layoutX="400.0" layoutY="208.0" mnemonicParsing="false" onAction="#framadateSubmitName" text="Submit" visible="false" />
+                    <Label fx:id="confirmation" layoutX="272.0" layoutY="250.0" visible="false" />
+                    <RadioButton fx:id="mergeButton" layoutX="250.0" layoutY="280.0" mnemonicParsing="false" onAction="#setBoolMergeYes" text="Merge agendas" visible="false" />
+                    <Button fx:id="icsButton" layoutX="272.0" layoutY="316.0" mnemonicParsing="false" onAction="#createICS" text="Confirm" visible="false" />
+                </children>
+            </AnchorPane>
+            -->

@@ -1,6 +1,5 @@
 package com.example.noodleapp;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -8,40 +7,41 @@ import javafx.beans.value.ChangeListener;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
-public class HomeViewController implements ChangeListener<Integer>{
+public class HomeController implements ChangeListener<Integer>{
 
     private ObservableList framPollsList;
     private ObservableList<Integer> eventoPollsList;
     private ObservableList<Integer> doodlePollsList;
+
     @FXML
     private ListView<Integer> listViewFramadate;
     @FXML
     private ListView<Integer> listViewEvento;
     @FXML
     private ListView<Integer> listViewDoodle;
-
     @FXML
     private Label timeSync;
-
     @FXML
     private VBox centerVBox;
+    @FXML
+    private MenuItem menuNewUser;
+
     @FXML
     public void initialize(){       //se lance dès le chargement de la scène automatique
 
@@ -119,14 +119,22 @@ public class HomeViewController implements ChangeListener<Integer>{
         }));
         loop4.setCycleCount(Timeline.INDEFINITE);
         loop4.play();
-
-
-
     }
-
 
     @Override
     public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
         System.out.println("Changement effectué");
+    }
+
+    public void switchSceneToNewUser(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newUserView.fxml"));
+            Stage stage = (Stage) menuNewUser.getParentPopup().getOwnerWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
