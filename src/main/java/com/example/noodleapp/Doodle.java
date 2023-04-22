@@ -1533,10 +1533,11 @@ public class Doodle{
                 reunionsGarde.add(r);
 
             }
-            else {
-                if(reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.OUI) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.ATTENTE) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.PEUTETRE) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.ORGANISATEUR)){
-                    reunionsGarde.add(reunion);
-                }
+           else if (reunion.getPropsDoodleList().size() == 1){
+                    if (reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.OUI) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.ATTENTE) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.PEUTETRE) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.ORGANISATEUR)) {
+                        reunionsGarde.add(reunion);
+                    }
+
             }
         }
     }
