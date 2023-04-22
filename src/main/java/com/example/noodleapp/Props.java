@@ -1,4 +1,4 @@
-package com.example.noodleapp;
+package org.example;
 
 import net.fortuna.ical4j.model.TimeZone;
 
