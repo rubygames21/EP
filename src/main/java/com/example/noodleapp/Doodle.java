@@ -32,19 +32,21 @@ public class Doodle{
 
 
     public Doodle() {
-        WebDriverManager.chromedriver().setup();
+        //WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
-        //String driverPath = "src/chromedriver";
-        //System.setProperty("webdriver.chrome.driver", driverPath);
+        String driverPath = "src/chromedriverSTABLE";
+        System.setProperty("webdriver.chrome.driver", driverPath);
         driver = new ChromeDriver();
         actions = new Actions(driver);
         reunions = new ArrayList<>();
     }
     public Doodle(List<String> href) throws ParseException, InterruptedException {        //lien href de la reunion a utilisé que quand on est connecte
-        WebDriverManager.chromedriver().setup();
+        //WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
+        String driverPath = "src/chromedriverSTABLE";
+        System.setProperty("webdriver.chrome.driver", driverPath);
         driver = new ChromeDriver();
         actions = new Actions(driver);
         reunions = new ArrayList<>();
@@ -88,20 +90,20 @@ public class Doodle{
         }
         // Minimiser la fenêtre du navigateur
         driver.manage().window().setPosition(new Point(-2000, 0));
-        while (true){
+        while (true) {
             getAllTheLinks();
-            for (String h : links)
-            {
+            for (String h : links) {
                 getAllTheInfomationPerLink(h);
-                ReunionDoodle r = reunions.get(reunions.size() - 1);
+            }
+            for (ReunionDoodle r : reunions) {
                 System.out.println("----------\nOrganisateur : " + r.getOrganisateur() + "\nIntitulé : " + r.getNom() + "\nle :" + r.getPropsDoodleList().get(0).getDate());
-                for(PropsDoodle p : r.getPropsDoodleList()) {
+                for (PropsDoodle p : r.getPropsDoodleList()) {
                     System.out.println("le :" + p.getDate() + " de :" + p.getHeureDebut() + " à :" + p.getHeureFin() + " ai-je déjà validé ce pool ? :" + p.getReponse() + " TimeZone : " + p.getTimeZone());
                 }
-                System.out.println("à :" + r.getLocalisation());;
+                System.out.println("à :" + r.getLocalisation());
+                Thread.sleep(300000);
+                driver.get("https://doodle.com/dashboard");
             }
-            Thread.sleep(300000);
-            driver.get("https://doodle.com/dashboard");
         }
     }
 
@@ -1533,7 +1535,7 @@ public class Doodle{
                 reunionsGarde.add(r);
 
             }
-           else if (reunion.getPropsDoodleList().size() == 1){
+            else if (reunion.getPropsDoodleList().size() == 1){
                     if (reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.OUI) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.ATTENTE) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.PEUTETRE) || reunion.getPropsDoodleList().get(0).getReponse().equals(Reponse.ORGANISATEUR)) {
                         reunionsGarde.add(reunion);
                     }
@@ -1550,11 +1552,10 @@ public class Doodle{
 //ce qui ne marche pas :
 //Le timezone quand je suis l'organisateur et j'ai cloturé une réunion multiple, le timezone quand je suis l'organisateur d'une réunion multiple
 //Toute les localisation sauf que quand je suis orga d'une seul reunion
-//Le create ics ne prend en compte que le premier elemnt de ma list de propsdoodle
 //Enfaite tout les timeZone et localisation ont un problème car il faut cliquer sur un bouton show more pour tout avoir
 //je ne prend pas en compte si j'ai un lien vision
 //Quand je ne suis pas l'organisateur, et que la reunion est booked, il n'y a aucun moyen de savoir si la reunion est passé ou pas donc mon programme la progrmame toujours à l'année suivante
-
+//j'ai un soucis avec l'export CSV
 
 
 
