@@ -37,7 +37,7 @@ public class Doodle{
         options.addArguments("--headless");
         String driverPath = "src/chromedriverSTABLE";
         System.setProperty("webdriver.chrome.driver", driverPath);
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         actions = new Actions(driver);
         reunions = new ArrayList<>();
     }
@@ -47,7 +47,7 @@ public class Doodle{
         options.addArguments("--headless");
         String driverPath = "src/chromedriverSTABLE";
         System.setProperty("webdriver.chrome.driver", driverPath);
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         actions = new Actions(driver);
         reunions = new ArrayList<>();
     }
@@ -71,7 +71,7 @@ public class Doodle{
         for (ReunionDoodle r : reunionsGarde) {
             System.out.println("----------\nOrganisateur : " + r.getOrganisateur() + "\nIntitulé : " + r.getNom() + "\nle :" + r.getPropsDoodleList().get(0).getDate());
             for(PropsDoodle p : r.getPropsDoodleList()) {
-                System.out.println("le :" + p.getDate() + " de :" + p.getHeureDebut() + " à :" + p.getHeureFin() + " ai-je déjà validé ce pool ? :" + p.getReponse() + " TimeZone : " + p.getTimeZone());
+                System.out.println("le :" + p.getDate() + " de :" + p.getHourDebutConforme() + " à :" + p.getHeureFin() + " ai-je déjà validé ce pool ? :" + p.getEachAnswer().get("MOI") + " TimeZone : " + p.getTimeZone());
             }
             System.out.println("à :" + r.getLocalisation());
         }
@@ -404,17 +404,21 @@ public class Doodle{
 
 
     public ArrayList<String> getAllTheLinks() throws InterruptedException {
-        //get the poll links
         Thread.sleep(900);  //temps d'attente obligatoire
         List<WebElement> linksWeb = driver.findElements(By.cssSelector("li:has(a)"));
+        linksWeb.remove(0);
         links = new ArrayList<>();
         for (WebElement link : linksWeb) {
-            String href = link.findElement(By.cssSelector("a")).getAttribute("href");
-            links.add(href);
+            WebElement linkContent = link.findElement(By.cssSelector("article > div > div"));
+            boolean isLinkOutdated = linkContent.getAttribute("class").contains("ActivityWrapper--confirmed-past__cf0PxLyioeQK8jfllK64");
+            if (!isLinkOutdated) {
+                String href = link.findElement(By.cssSelector("a")).getAttribute("href");
+                links.add(href);
+            }
         }
-        links.remove(0); // le premier link n'est pas un link interessant
         return links;
     }
+
 
     public void getAllTheInfomationPerLink(String href) throws InterruptedException {
         driver.get(href);
@@ -497,7 +501,7 @@ public class Doodle{
 
             try {
                 //check si cet element est present avant de faire un appel de fonction
-                WebElement dateElement = driver.findElement(By.cssSelector("div.MetadataItem__content > div > div"));
+                WebElement dateElement = driver.findElement(By.cssSelector("div.MetadataItem.MeetingMetadataInfo__meeting-time > div.MetadataItem__content > div > div"));
                 if(isDateAfterCurrentDate()){
                     ReunionDoodle reunionDoodle = new ReunionDoodle();
                     getInformationPollBookedOrga(reunionDoodle);
@@ -655,16 +659,20 @@ public class Doodle{
             throw new RuntimeException(e);
         }
 
-/*
+
         // get la localisation
         try {
             List<WebElement> toggleButton = driver.findElements(By.id("metadata-module_metadata__toggle-button__sdBqo"));
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", toggleButton.get(0));
             Thread.sleep(500);
-            actions.moveToElement(toggleButton.get(0)).click().perform();
-            WebElement loc = driver.findElement(By.cssSelector(".metadata-item-module_metadata-item__Yc73-.metadata-module_metadata__location__xgUKo"));
+            // obtenir le label du svg
+            String svgLabel = toggleButton.get(0).findElement(By.tagName("svg")).getAttribute("aria-label");
+            if(svgLabel.equals("ChevronDown")) {
+                actions.moveToElement(toggleButton.get(0)).click().perform();
+                Thread.sleep(500);
+            }
+            WebElement loc = driver.findElement(By.cssSelector(".metadata-location-module_metadata-location__a-TWl"));
             WebElement l = loc.findElement(By.cssSelector("p"));
-            ((JavascriptExecutor) webElement).executeScript("arguments[0].scrollIntoView(true);", l);
             if (l.getText().equals("Switzerland - Zürich, Genève, Basel, Lausanne")) {
                 reunion.setLocalisation("Localisation non précisé");
             } else {
@@ -673,9 +681,9 @@ public class Doodle{
 
         } catch (Exception e) {
             reunion.setLocalisation("Localisation non précisé");
-            //System.out.println("Localisation non précisé");
+            System.out.println("Localisation non précisé");
         }
-        */
+
 
         // get l'organisateur
         try {
@@ -702,24 +710,17 @@ public class Doodle{
         }
 
         //get Timezone
-        try{
-            // Recherche de l'élément HTML contenant le texte souhaité
-            WebElement element = driver.findElement(By.className("timezone-label-module_timezone-label__rXIc6"));
-            // Récupération du texte de l'élément HTML
-            String texte = element.getText();
-            propsDoodle.setTimeZone(texte);
-        }catch (Exception e) {
-            try {
-                // Trouver l'élément span contenant le fuseau horaire
-                WebElement timeZoneElement = driver.findElement(By.className("current-timezone-module_label-wrapper__Vasq8"));
+        try {
+            // Trouver l'élément span contenant le fuseau horaire
+            WebElement timeZoneElement = driver.findElement(By.className("timezone-label-module_timezone-label__rXIc6"));
 
-                // Extraire le fuseau horaire en le récupérant dans le texte de l'élément
-                String timeZone = timeZoneElement.getText();
-                propsDoodle.setTimeZone(timeZone);
-            } catch (Exception ee) {
-                System.out.println("Je n'arrive pas à avoir le timeZone");
-            }
+            // Extraire le fuseau horaire en le récupérant dans le texte de l'élément
+            String timeZone = timeZoneElement.getText();
+            propsDoodle.setTimeZone(timeZone);
+        } catch (Exception ee) {
+            System.out.println("Je n'arrive pas à avoir le timeZone");
         }
+
 
         setTheUserResponseWebElement(propsDoodle, webElement);
 
@@ -765,33 +766,16 @@ public class Doodle{
             System.out.println("je n'arrive pas a avoir l'horaire");
         }
 
-        //getFuseauHoraire
-        try{
-            WebElement element = driver.findElement(By.cssSelector("div.MetadataItem__content span[data-testid='meeting-metadata-info-timezone']"));
-            //reunion.setFuseauHoraire(element.getText());
-            propsDoodle.setTimeZone(element.getText());
-        }catch (Exception e){
-            try {
-                WebElement element = driver.findElement(By.cssSelector("div.timezone-label-module_timezone-label__rXIc6 span"));
-                //reunion.setFuseauHoraire(element.getText());
-                propsDoodle.setTimeZone(element.getText());
-            }catch (Exception ee){
-                try {
-                    WebElement timezoneLabel = driver.findElement(By.className("current-timezone-module_label__aHC19"));
-                    String timezoneText = timezoneLabel.getText(); // Récupère le texte de l'élément HTML
-                    String timezone = timezoneText.substring(timezoneText.indexOf("(") + 1, timezoneText.indexOf(")")); // Récupère la valeur entre parenthèses
-                    propsDoodle.setTimeZone(timezone);
-                }catch (Exception eee) {
-                    try {
-                        WebElement timeZoneElement = driver.findElement(By.cssSelector("span.current-timezone-module_label-wrapper__Vasq8"));
-                        // Extraire le texte de l'élément
-                        String timeZoneText = timeZoneElement.getText();
-                        propsDoodle.setTimeZone(timeZoneText);
-                    } catch (Exception eeee) {
-                        System.out.println("je n'arrive pas a avoir le fuseau horaire");
-                    }
-                }
-            }
+        //get Timezone
+        try {
+            // Trouver l'élément span contenant le fuseau horaire
+            WebElement timeZoneElement = driver.findElement(By.className("current-timezone-module_label-wrapper__Vasq8"));
+
+            // Extraire le fuseau horaire en le récupérant dans le texte de l'élément
+            String timeZone = timeZoneElement.getText();
+            propsDoodle.setTimeZone(timeZone);
+        } catch (Exception ee) {
+            System.out.println("Je n'arrive pas à avoir le timeZone");
         }
 
         //get Duree
@@ -812,15 +796,18 @@ public class Doodle{
         }
 
 
-        // get la localisation
+// get la localisation
         try {
             List<WebElement> toggleButton = driver.findElements(By.id("metadata-module_metadata__toggle-button__sdBqo"));
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", toggleButton.get(0));
             Thread.sleep(500);
-            actions.moveToElement(toggleButton.get(0)).click().perform();
-            WebElement loc = driver.findElement(By.cssSelector(".metadata-item-module_metadata-item__Yc73-.metadata-module_metadata__location__xgUKo"));
+            // obtenir le label du svg
+            String svgLabel = toggleButton.get(0).findElement(By.tagName("svg")).getAttribute("aria-label");
+            if(svgLabel.equals("ChevronDown")) {
+                actions.moveToElement(toggleButton.get(0)).click().perform();
+            }
+            WebElement loc = driver.findElement(By.cssSelector(".metadata-location-module_metadata-location__a-TWl"));
             WebElement l = loc.findElement(By.cssSelector("p"));
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", l);
             if (l.getText().equals("Switzerland - Zürich, Genève, Basel, Lausanne")) {
                 reunion.setLocalisation("Localisation non précisé");
             } else {
@@ -829,8 +816,9 @@ public class Doodle{
 
         } catch (Exception e) {
             reunion.setLocalisation("Localisation non précisé");
-            System.out.println("Localisation non précisé");
+            //System.out.println("Localisation non précisé");
         }
+
 
         // get l'organisateur
         try {
@@ -847,24 +835,29 @@ public class Doodle{
     public void getDetailsOrga(ReunionDoodle reunionDoodle, WebElement webElement){
         PropsDoodle propsDoodle = new PropsDoodle();
         try {
-            //showMore
-            WebElement buttonShowMore = driver.findElement(By.cssSelector(".Button.Button--linkDark.Metadata__toggle-info-button"));
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", buttonShowMore);
-            actions.moveToElement(buttonShowMore).click().perform();
-            //getTheDuration and localisation
+            //getTheDuration
             Thread.sleep(500);
             List<WebElement> conteneur = driver.findElements(By.cssSelector(".MetadataItem__content"));
             reunionDoodle.setDuree(conteneur.get(0).getText());
-            reunionDoodle.setLocalisation(conteneur.get(1).getText());
-        } catch (Exception e) { //si la localisation est non precisé, alors le bouton show more n'existe pas
-            try {
-                List<WebElement> conteneur = driver.findElements(By.cssSelector(".MetadataItem__content"));
-                reunionDoodle.setDuree(conteneur.get(0).getText());
-            } catch (Exception ee) {
-                System.out.println("je n'arrive pas a avoir la localisation");
-            }
-
+            //reunionDoodle.setLocalisation(conteneur.get(1).getText());
+        } catch (Exception e) {
+            System.out.println("Je n'arrive pas à avoir la duree");
         }
+
+        //get The location
+        try{
+            WebElement button = driver.findElement(By.cssSelector(".Button--linkDark.Metadata__toggle-info-button > span"));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", button);
+            if (button.getText().equals("Show meeting details")) {
+                actions.moveToElement(button).click().perform();
+                Thread.sleep(500);
+                WebElement location = driver.findElement(By.cssSelector(".MeetingMetadataInfo__location-text"));
+                reunionDoodle.setLocalisation(location.getText());
+            }
+        }catch (Exception e){
+            System.out.println("je n'arrive pas avoir la location");
+        }
+
 
         //getTitle
         try {
@@ -891,14 +884,8 @@ public class Doodle{
             WebElement element = driver.findElement(By.cssSelector("div.MetadataItem__content span[data-testid='meeting-metadata-info-timezone']"));
             //reunionDoodle.setFuseauHoraire(element.getText());
             propsDoodle.setTimeZone(element.getText());
-        }catch (Exception e){
-            try {
-                WebElement element = driver.findElement(By.cssSelector("div.timezone-label-module_timezone-label__rXIc6 span"));
-                //reunionDoodle.setFuseauHoraire(element.getText());
-                propsDoodle.setTimeZone(element.getText());
-            }catch (Exception ee){
-                System.out.println("je n'arrive pas a avoir le fuseau horaire");
-            }
+        }catch (Exception e) {
+            System.out.println("je n'arrive pas a avoir le fuseau horaire");
         }
 
 
@@ -959,11 +946,6 @@ public class Doodle{
             String date = elements.get(2).getText() + " " + elements.get(1).getText() + " " + elements.get(0).getText();
             String debut = elements.get(3).getText();
             String fin = elements.get(4).getText();
-            /*reunionDoodle.setDate(date);
-            reunionDoodle.setDate(setTheYearOfThePoll(reunionDoodle));
-            reunionDoodle.setHeureDepart(debut);
-            reunionDoodle.setHeureFin(fin);
-             */
             propsDoodle.setDate(date);
             propsDoodle.setHeureDebut(isTheHourConforme(debut));
             propsDoodle.setHeureFin(isTheHourConforme(fin));
@@ -973,19 +955,26 @@ public class Doodle{
         }
         propsDoodle.setReponse(Reponse.ORGANISATEUR);
 
+        //get The location
+        try{
+            WebElement button = driver.findElement(By.cssSelector(".Button--linkDark.Metadata__toggle-info-button > span"));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", button);
+            if (button.getText().equals("Show meeting details")) {
+                actions.moveToElement(button).click().perform();
+                WebElement location = driver.findElement(By.cssSelector(".MeetingMetadataInfo__location-text"));
+                reunionDoodle.setLocalisation(location.getText());
+            }
+        }catch (Exception e){
+            System.out.println("je n'arrive pas avoir la location");
+        }
+
         //getFuseauHoraire
         try{
             WebElement element = driver.findElement(By.cssSelector("div.MetadataItem__content span[data-testid='meeting-metadata-info-timezone']"));
             //reunionDoodle.setFuseauHoraire(element.getText());
             propsDoodle.setTimeZone(element.getText());
-        }catch (Exception e){
-            try {
-                WebElement element = driver.findElement(By.cssSelector("div.timezone-label-module_timezone-label__rXIc6 span"));
-                //reunionDoodle.setFuseauHoraire(element.getText());
-                propsDoodle.setTimeZone(element.getText());
-            }catch (Exception ee){
-                System.out.println("je n'arrive pas a avoir le fuseau horaire");
-            }
+        }catch (Exception e) {
+            System.out.println("je n'arrive pas a avoir le fuseau horaire");
         }
         reunionDoodle.getPropsDoodleList().add(propsDoodle);
 
@@ -1032,6 +1021,28 @@ public class Doodle{
             System.out.println("je n'aarive pas à avoir le titre");
 
         }
+        // get la localisation
+        try {
+            List<WebElement> toggleButton = driver.findElements(By.id("metadata-module_metadata__toggle-button__sdBqo"));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", toggleButton.get(0));
+            Thread.sleep(500);
+            // obtenir le label du svg
+            String svgLabel = toggleButton.get(0).findElement(By.tagName("svg")).getAttribute("aria-label");
+            if(svgLabel.equals("ChevronDown")) {
+                actions.moveToElement(toggleButton.get(0)).click().perform();
+            }
+            WebElement loc = driver.findElement(By.cssSelector(".metadata-location-module_metadata-location__a-TWl"));
+            WebElement l = loc.findElement(By.cssSelector("p"));
+            if (l.getText().equals("Switzerland - Zürich, Genève, Basel, Lausanne")) {
+                reunionDoodle.setLocalisation("Localisation non précisé");
+            } else {
+                reunionDoodle.setLocalisation(l.getText());
+            }
+
+        } catch (Exception e) {
+            reunionDoodle.setLocalisation("Localisation non précisé");
+            //System.out.println("Localisation non précisé");
+        }
 
         // get the timezone
         try {
@@ -1042,14 +1053,8 @@ public class Doodle{
             System.out.println("je n'arive pas à avoir le timezone");
 
         }
-        // get the location
-        try {
-            WebElement locationElement = driver.findElement(By.cssSelector(".metadata-location-module_metadata-location__a-TWl span"));
-            String location = locationElement.getText();
-            reunionDoodle.setLocalisation(location);
-        }catch (Exception e){
-            System.out.println("je n'aarive pas à avoir la localisation");
-        }
+
+
 
         reunionDoodle.getPropsDoodleList().add(propsDoodle);
     }
@@ -1104,14 +1109,18 @@ public class Doodle{
             System.out.println("Je n'arrive pas à avoir l'heure de début et l'heure de fin");
         }
 
-        //get localisation
+        //get The location
         try{
-            WebElement locationElement = driver.findElement(By.className("MetadataItem MeetingMetadataInfo__location"));
-            String location = locationElement.findElement(By.className("MeetingMetadataInfo__location-text")).getText();
-            reunionDoodle.setLocalisation(location);
-
+            WebElement button = driver.findElement(By.cssSelector(".Button--linkDark.Metadata__toggle-info-button > span"));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", button);
+            if (button.getText().equals("Show meeting details")) {
+                actions.moveToElement(button).click().perform();
+                Thread.sleep(500);
+                WebElement location = driver.findElement(By.cssSelector(".MeetingMetadataInfo__location-text"));
+                reunionDoodle.setLocalisation(location.getText());
+            }
         }catch (Exception e){
-            System.out.println("Je n'arrive pas à avoir la localisation");
+            System.out.println("je n'arrive pas avoir la location");
         }
 
         //get Time Zone
@@ -1401,8 +1410,7 @@ public class Doodle{
         Date date;
         try {
             date = dateFormat.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             System.out.println("probleeeeeeme");
             return false;
         }
@@ -1550,11 +1558,7 @@ public class Doodle{
 
 
 //ce qui ne marche pas :
-//Le timezone quand je suis l'organisateur et j'ai cloturé une réunion multiple, le timezone quand je suis l'organisateur d'une réunion multiple
-//Toute les localisation sauf que quand je suis orga d'une seul reunion
-//Enfaite tout les timeZone et localisation ont un problème car il faut cliquer sur un bouton show more pour tout avoir
 //je ne prend pas en compte si j'ai un lien vision
-//Quand je ne suis pas l'organisateur, et que la reunion est booked, il n'y a aucun moyen de savoir si la reunion est passé ou pas donc mon programme la progrmame toujours à l'année suivante
 //j'ai un soucis avec l'export CSV
 
 
