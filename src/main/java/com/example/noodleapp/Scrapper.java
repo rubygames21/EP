@@ -7,5 +7,5 @@ import java.io.IOException;
 public abstract class Scrapper {
 
 
-    abstract public void createICS(WebClient wb) throws IOException;
+    abstract public void createICS(WebClient wb, String path) throws IOException;
 }

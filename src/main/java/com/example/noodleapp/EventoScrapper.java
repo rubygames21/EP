@@ -305,8 +305,8 @@ public class EventoScrapper extends Scrapper{
     }
 
     @Override
-    public void createICS(WebClient wb) throws IOException {
-        File calendarICS = new File ("C:\\Users\\HDrag\\Documents\\GitHub\\EP\\"+ "evento_calendar.ics");
+    public void createICS(WebClient wb, String path) throws IOException {
+        File calendarICS = new File (path + "evento_calendar.ics");
         if (!calendarICS.exists()) {
             try {
                 calendarICS.createNewFile();
@@ -418,7 +418,8 @@ public class EventoScrapper extends Scrapper{
         e.connect(client,"atharrea","fdqj8t,\\g(","INSA Rennes");
         e.getNameEmail(client);
         e.getPolls(client);
-        e.createICS(client);
+        String path = "C:\\Users\\HDrag\\Documents\\GitHub\\EP\\";
+        e.createICS(client,path);
         client.close();
     }
 

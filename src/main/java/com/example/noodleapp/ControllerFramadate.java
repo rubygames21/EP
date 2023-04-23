@@ -60,8 +60,8 @@ public class ControllerFramadate {
         confirmationAdd.setText("     Le nom    \n"+name+"\na bien été ajouté");   //il faudra se servir de l'url pour l'inserer
     }
 
-    public void createICS(MouseEvent mouseEvent) throws IOException {
-        user.createAllICS();
+    public void createICS(MouseEvent mouseEvent,String path) throws IOException {
+        user.createAllICS(path);
     }
 
     public void setBoolMergeYes(MouseEvent mouseEvent){
