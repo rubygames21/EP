@@ -2,51 +2,69 @@ BEGIN:VCALENDAR
 PRODID:-//Ben Fortuna//iCal4j 1.0//EN
 VERSION:2.0
 BEGIN:VEVENT
-DTSTAMP:20230423T135604Z
-DTSTART:20221110T110000
-DTEND:20221110T120000
-SUMMARY:Poll : Test and you vote : Yes organized by : Marie Dubouays De La Begassiere who is \"test\" with 2 Participant(s). This poll is closed !
+DTSTAMP:20230423T150101Z
+DTSTART:20221210T100000
+DTEND:20221210T110000
+SUMMARY:Yes | Test
 TZID:Europe/Paris
-UID:254975d3-7505-4245-ab4b-cb1b01ca48b0
+DESCRIPTION:Test test Organizer : Marie Dubouays De La Begassiere URL : https://evento.renater.fr/survey/results/gsj5vz8k\n
+STATUS:CONFIRMED
+URL:https://evento.renater.fr/survey/results/gsj5vz8k
+UID:50b966d0-69a9-4178-a41b-7079d5fbf1e7
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20230423T135604Z
-DTSTART:20230315T200000
-DTEND:20230315T210000
-SUMMARY:Poll : QuoiCOUBEH and you vote : Yes organized by : Marie Dubouays De La Begassiere who is \"Avez-vous déjà été victime du QUOICOUBEH ?\" with 2 Participant(s). This poll is still open !
+DTSTAMP:20230423T150101Z
+DTSTART:20230415T190000
+DTEND:20230415T200000
+SUMMARY:[TENTATIVE] Yes | QuoiCOUBEH
 TZID:Europe/Paris
-UID:ec85e7d4-d2ee-45d8-b1e7-8faeff193572
+DESCRIPTION:QuoiCOUBEH Avez-vous déjà été victime du QUOICOUBEH ? Organizer : Marie Dubouays De La Begassiere URL : https://evento.renater.fr/survey/results/x7800bm5\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/x7800bm5
+UID:de90b01d-0b5f-48b1-a245-e2de4550d531
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20230423T135604Z
-DTSTART:20230322T190000
-DTEND:20230322T200000
-SUMMARY:Poll : Test01 and you vote : Yes organized by : Amory Tharreau who is \"abc\" with 1 Participant(s). This poll is closed !
+DTSTAMP:20230423T150101Z
+DTSTART:20230422T180000
+DTEND:20230422T200000
+SUMMARY:Yes | Test01
 TZID:Europe/Paris
-UID:745117e1-1eb0-4494-9fc5-9a8742e434c5
+DESCRIPTION:Test01 abc Organizer : Amory Tharreau URL : https://evento.renater.fr/survey/results/9szitxm1\n
+STATUS:CONFIRMED
+URL:https://evento.renater.fr/survey/results/9szitxm1
+UID:958512e3-f866-4bc6-ba05-c8ca0548470b
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20230423T135604Z
-DTSTART:20230307T210000
-DTEND:20230307T220000
-SUMMARY:Poll : Timothée and you vote : Yes organized by : Marie Dubouays De La Begassiere who is \"Pour ou contre le lavage de Timothée ?\" with 2 Participant(s). This poll is still open !
+DTSTAMP:20230423T150101Z
+DTSTART:20230407T200000
+DTEND:20230407T230000
+SUMMARY:[TENTATIVE] Yes | Timothée
 TZID:Europe/Paris
-UID:2db7b531-929a-4900-9945-08c08a57bd70
+DESCRIPTION:Timothée Pour ou contre le lavage de Timothée ? Organizer : Marie Dubouays De La Begassiere URL : https://evento.renater.fr/survey/results/byi7yj62\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/byi7yj62
+UID:3cdb51f7-aaad-49da-8f14-45481648d68b
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20230423T135604Z
-DTSTART:20230312T200000
-DTEND:20230312T210000
-SUMMARY:Poll : bonsoir and you vote : Yes organized by : Amory Tharreau who is \"ceci est un test\" with 0 Participant(s). This poll is still open !
+DTSTAMP:20230423T150101Z
+DTSTART:20230412T190000
+DTEND:20230412T200000
+SUMMARY:[TENTATIVE] Yes | bonsoir
 TZID:Europe/Paris
-UID:2754aa87-7299-438d-9ce1-d54541c01551
+DESCRIPTION:bonsoir ceci est un test Organizer : Amory Tharreau URL : https://evento.renater.fr/survey/results/u7hf199d\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/u7hf199d
+UID:ffce7ded-46ec-4b72-a84f-2f5207612e13
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20230423T135604Z
-DTSTART:20230314T200000
-DTEND:20230314T210000
-SUMMARY:Poll : bonsoir and you vote : Yes organized by : Amory Tharreau who is \"ceci est un test\" with 0 Participant(s). This poll is still open !
+DTSTAMP:20230423T150101Z
+DTSTART:20230414T190000
+DTEND:20230414T200000
+SUMMARY:[TENTATIVE] Yes | bonsoir
 TZID:Europe/Paris
-UID:8533a2c0-2632-4f64-b667-e5657af5ccf3
+DESCRIPTION:bonsoir ceci est un test Organizer : Amory Tharreau URL : https://evento.renater.fr/survey/results/u7hf199d\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/u7hf199d
+UID:1c6be0c6-65bd-4c83-9eac-343681d5c604
 END:VEVENT
 END:VCALENDAR

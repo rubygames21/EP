@@ -8,9 +8,7 @@ import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -219,7 +218,7 @@ public class EventoScrapper extends Scrapper{
                     //get start and finish date
                     temp3 = StringUtils.substringBetween(temp2,"<span data-timestamp=","-");
                     long timeStart = Long.parseLong(StringUtils.substringBetween(temp3,"\"","\""));
-                    temp3 = StringUtils.substringBetween(temp2,"-"," data-localize=\"time\">");
+                    temp3 = StringUtils.substringBetween(temp2,"<br/>"," data-localize=\"time\">");
                     long timeFinish = Long.parseLong(StringUtils.substringBetween(temp3,"\"","\""));
 
                     //System.out.println("TESTING : " + tsToDate(timeStart) + " " + tsToHour(timeStart) + " " + tsToHour(timeFinish));
@@ -334,21 +333,25 @@ public class EventoScrapper extends Scrapper{
 
                         //TODO : get other participants
 
-                        String eventName = ("Poll : " + ev.title +
-                                " and you vote : " + getMyVote(props.eachAnswer) +
-                                " organized by : " + ev.organizer +
-                                " who is \"" + ev.description +
-                                "\" with " + ev.numberParticipant +
-                                " Participant(s). ");
-                        if (ev.closed) {
-                            eventName += "This poll is closed !";
+                        String eventName = "";
+                        Status status;
+                        if (!ev.closed) {
+                            eventName += "[TENTATIVE] "; // ?
+                            status = new Status("TENTATIVE");
                         } else {
-                            eventName += "This poll is still open !";
+                            status = new Status("CONFIRMED");
                         }
+                        eventName += getMyVote(props.eachAnswer) + " | " + ev.title;
+                        Description desc = new Description(ev.title + " " + ev.description + " Organizer : " +  ev.organizer + " URL : " + ev.url);
+                        Url url = new Url();
+                        url.setValue(ev.url.trim());
                         DateTime start = new DateTime(startDate.getTime());
                         DateTime end = new DateTime(endDate.getTime());
                         VEvent meeting = new VEvent(start, end, eventName);
                         meeting.getProperties().add(tz.getTimeZoneId());
+                        meeting.getProperties().add(desc);
+                        meeting.getProperties().add(status);
+                        meeting.getProperties().add(url);
                         UidGenerator ug = new RandomUidGenerator();
                         Uid uid = ug.generateUid();
                         meeting.getProperties().add(uid);
@@ -361,6 +364,8 @@ public class EventoScrapper extends Scrapper{
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -379,11 +384,11 @@ public class EventoScrapper extends Scrapper{
         Calendar date = new GregorianCalendar();
         date.setTimeZone(props.timeZone);
         //add Date
-        date.set(Calendar.MONTH, props.date.month-1 );
+        date.set(Calendar.MONTH, props.date.month);
         date.set(Calendar.DAY_OF_MONTH, props.date.day);
         date.set(Calendar.YEAR, props.date.year);
         //add Hour
-        date.set(Calendar.HOUR_OF_DAY, props.hour.hour);
+        date.set(Calendar.HOUR_OF_DAY, props.hour.hour-1);
         date.set(Calendar.MINUTE, props.hour.minute);
         date.set(Calendar.SECOND, props.hour.second);
         return date;
@@ -393,11 +398,11 @@ public class EventoScrapper extends Scrapper{
         Calendar date = new GregorianCalendar();
         date.setTimeZone(props.timeZone);
         //add Date
-        date.set(Calendar.MONTH, props.date.month-1 );
+        date.set(Calendar.MONTH, props.date.month);
         date.set(Calendar.DAY_OF_MONTH, props.date.day);
         date.set(Calendar.YEAR, props.date.year);
         //add Hour
-        date.set(Calendar.HOUR_OF_DAY, props.hour.hour+1);
+        date.set(Calendar.HOUR_OF_DAY, props.hourEnd.hour-1);
         date.set(Calendar.MINUTE, props.hour.minute);
         date.set(Calendar.SECOND, props.hour.second);
         return date;
