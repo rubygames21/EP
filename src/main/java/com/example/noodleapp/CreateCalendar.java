@@ -88,7 +88,6 @@ public class CreateCalendar {
 
         // Set organizer, location, and unique identifier for the event
         UidGenerator ug = new RandomUidGenerator();
-        event.getProperties().add(ug.generateUid());
         event.getProperties().add(new Organizer("MAILTO:" + organizer));
         event.getProperties().add(new Location(location));
         event.getProperties().add(new Uid("event12345"));
