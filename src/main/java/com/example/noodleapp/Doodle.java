@@ -176,7 +176,7 @@ public class Doodle{
             reunions.addAll(d2.reunions);
 
         }
-        else if(links.size() >= 10 && links.size() <= 20){
+        else if(links.size() > 50){
             driver.quit();
             ArrayList<String> list1 = new ArrayList<String>();
             ArrayList<String> list2 = new ArrayList<String>();
@@ -343,6 +343,127 @@ public class Doodle{
             reunions.addAll(d2.reunions);
             reunions.addAll(d3.reunions);
             reunions.addAll(d4.reunions);
+        }
+
+        else if(links.size() >= 10 && links.size() <= 20) {
+            driver.quit();
+            List<List<String>> lists = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                lists.add(new ArrayList<String>());
+            }
+            for (int i = 0; i < links.size(); i++) {
+                lists.get(i % 7).add(links.get(i));
+            }
+
+            Doodle d1 = new Doodle(lists.get(0));
+            Doodle d2 = new Doodle(lists.get(1));
+            Doodle d3 = new Doodle(lists.get(2));
+            Doodle d4 = new Doodle(lists.get(3));
+            Doodle d5 = new Doodle(lists.get(4));
+            Doodle d6 = new Doodle(lists.get(5));
+            Doodle d7 = new Doodle(lists.get(6));
+
+            ExecutorService executors = Executors.newFixedThreadPool(7);
+
+            List<Callable<Void>> taskss = Arrays.asList(
+                    () -> {
+                        d1.connectDoodle(login, password);
+                        return null;
+                    },
+                    () -> {
+                        d2.connectDoodle(login, password);
+                        return null;
+                    },
+                    () -> {
+                        d3.connectDoodle(login, password);
+                        return null;
+                    },
+                    () -> {
+                        d4.connectDoodle(login, password);
+                        return null;
+                    },
+                    () -> {
+                        d5.connectDoodle(login, password);
+                        return null;
+                    },  () -> {
+                        d6.connectDoodle(login, password);
+                        return null;
+                    },  () -> {
+                        d7.connectDoodle(login, password);
+                        return null;
+                    }
+            );
+
+            executors.invokeAll(taskss);
+            executors.shutdown();
+
+
+            ExecutorService executor = Executors.newFixedThreadPool(7);
+
+            List<Callable<Void>> tasks = Arrays.asList(
+                    () -> {
+                        for (String s : lists.get(0)) {
+                            d1.getAllTheInfomationPerLink(s);
+                        }
+                        return null;
+                    },
+                    () -> {
+                        for (String s : lists.get(1)) {
+                            d2.getAllTheInfomationPerLink(s);
+                        }
+                        return null;
+                    },
+                    () -> {
+                        for (String s : lists.get(2)) {
+                            d3.getAllTheInfomationPerLink(s);
+                        }
+                        return null;
+                    },
+                    () -> {
+                        for (String s : lists.get(3)) {
+                            d4.getAllTheInfomationPerLink(s);
+                        }
+                        return null;
+                    },
+                    () -> {
+                        for (String s : lists.get(4)) {
+                            d5.getAllTheInfomationPerLink(s);
+                        }
+                        return null;
+                    },
+                    () -> {
+                        for (String s : lists.get(5)) {
+                            d6.getAllTheInfomationPerLink(s);
+                        }
+                        return null;
+                    },
+                    () -> {
+                        for (String s : lists.get(6)) {
+                            d7.getAllTheInfomationPerLink(s);
+                        }
+                        return null;
+                    }
+
+            );
+            executor.invokeAll(tasks);
+            executor.shutdown();
+
+            d1.driver.quit();
+            d2.driver.quit();
+            d3.driver.quit();
+            d4.driver.quit();
+            d5.driver.quit();
+            d6.driver.quit();
+            d7.driver.quit();
+
+
+            reunions.addAll(d1.reunions);
+            reunions.addAll(d2.reunions);
+            reunions.addAll(d3.reunions);
+            reunions.addAll(d4.reunions);
+            reunions.addAll(d5.reunions);
+            reunions.addAll(d6.reunions);
+            reunions.addAll(d7.reunions);
         }
     }
 
@@ -561,7 +682,7 @@ public class Doodle{
                         JavascriptExecutor js = (JavascriptExecutor) driver;
                         long scrollHeight = (long) js.executeScript("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight );");
                         long scrollPosition = m;
-                        long scrollBy = 20;
+                        long scrollBy = 50;
                         while (scrollPosition < scrollHeight) {
                             scrollPosition += scrollBy;
                             if (scrollPosition > scrollHeight) {
@@ -681,7 +802,7 @@ public class Doodle{
 
         } catch (Exception e) {
             reunion.setLocalisation("Localisation non précisé");
-            System.out.println("Localisation non précisé");
+            //System.out.println("Localisation non précisé");
         }
 
 
@@ -1559,7 +1680,6 @@ public class Doodle{
 
 //ce qui ne marche pas :
 //je ne prend pas en compte si j'ai un lien vision
-//j'ai un soucis avec l'export CSV
 
 
 
