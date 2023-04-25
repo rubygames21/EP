@@ -37,7 +37,7 @@ public class Doodle{
         options.addArguments("--headless");
         String driverPath = "src/chromedriverSTABLE";
         System.setProperty("webdriver.chrome.driver", driverPath);
-        driver = new ChromeDriver(options);
+        driver = new ChromeDriver();
         actions = new Actions(driver);
         reunions = new ArrayList<>();
     }
