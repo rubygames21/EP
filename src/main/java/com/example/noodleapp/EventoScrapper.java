@@ -24,19 +24,26 @@ import java.util.*;
 
 public class EventoScrapper extends Scrapper{
 
+    String username;
+    String password;
+    String cas;
+
     String name; //format "Prenom Nom"
     String email;
     Set<String> listRep; //list of all the ID of the polls
     List<EventoPoll> evento;
 
-    public EventoScrapper() {
+    public EventoScrapper(String username, String password, String cas) {
         name = null;
         email = null;
         listRep  = new HashSet<>(); //initialize ID list
         evento = new ArrayList<>();
+        this.username = username;
+        this.password = password;
+        this.cas = cas;
     }
 
-    public void connect(WebClient client,String user, String pass, String organization) throws Exception {
+    public void connect(WebClient client) throws Exception {
         client.getOptions().setJavaScriptEnabled(true); // necessary for the automatic establishment selection list
 
         HtmlPage page = client.getPage("https://evento.renater.fr/Shibboleth.sso/Login?target=https%3A%2F%2Fevento.renater.fr%2Fhome");
@@ -57,7 +64,7 @@ public class EventoScrapper extends Scrapper{
 
         // We type the information of the name of the establishment in the input field
         el = page.getFirstByXPath("//input[@class='select2-search__field']"); // field SearchInput
-        el.type(organization); // we reduce the possible answers by specifying the establishment sought
+        el.type(this.cas); // we reduce the possible answers by specifying the establishment sought
 
         // Waits (at the max the indicated limit) for the search in javascript to finish listing the answers
         if (0 != client.waitForBackgroundJavaScript(5000)) // 5 seconds max
@@ -73,7 +80,7 @@ public class EventoScrapper extends Scrapper{
         // </option>
         el = page.getFirstByXPath("//*[@id='userIdPSelection']/option[1]"); // the 1st and only option in the list
         System.out.println(el.getAttribute("value"));
-        connectCas(client,user, pass, el.getAttribute("value"));
+        connectCas(client,this.username, this.password, el.getAttribute("value"));
     }
 
     /** Connects to Evento via a given CAS server (Central Authentication Service). */
@@ -173,33 +180,77 @@ public class EventoScrapper extends Scrapper{
 
             if (temp.startsWith("\nThis Evento is closed")) {
                 //CASE : POOL CLOSED
-
-                //get closed date (not so useful)
-                //long timeClosed = Long.parseLong(StringUtils.substringBetween(page.asXml(), "<span data-timestamp=\"", "\""));
-
-                //get start and finish date
                 temp = StringUtils.substringBetween(page.asXml(),"Selected final answer :","</section>");
-                long timeStart = Long.parseLong(StringUtils.substringBetween(temp,"span data-timestamp=\"","\""));
-                temp = StringUtils.substringBetween(temp,"</span>","data-localize=\"time\">");
-                long timeFinish = Long.parseLong(StringUtils.substringBetween(temp,"span data-timestamp=\"","\""));
+                if(temp != null) {
 
-                // ADD TO A PROP : always YES
-                Props prop = new Props(timezone,tsToDate(timeStart),tsToHour(timeStart),tsToHour(timeFinish),yesAnswer);
-                poll.props.add(prop);
-                // date finish ? : case if the meeting during more than 1 day
+                    //get closed date (not so useful)
+                    //long timeClosed = Long.parseLong(StringUtils.substringBetween(page.asXml(), "<span data-timestamp=\"", "\""));
+
+                    //get start and finish date
+                    long timeStart = Long.parseLong(StringUtils.substringBetween(temp, "span data-timestamp=\"", "\""));
+                    temp = StringUtils.substringBetween(temp, "</span>", "data-localize=\"time\">");
+                    long timeFinish = Long.parseLong(StringUtils.substringBetween(temp, "span data-timestamp=\"", "\""));
+
+                    // ADD TO A PROP : always YES
+                    Props prop = new Props(timezone, tsToDate(timeStart), tsToHour(timeStart), tsToHour(timeFinish), yesAnswer);
+                    poll.props.add(prop);
+                    // date finish ? : case if the meeting during more than 1 day
 
                 /*
                 System.out.println(prop.date + " " + prop.hour + " " + prop.hourEnd);
                 System.out.println(poll.description + " " + poll.title + " " + poll.organizer);
                  */
 
-                // organizer
-                if(!poll.organizer.equals(this.name)) {
-                    // I assume that the organizer participates in the meeting that he creates himself so if organizer = name of the account we keep the date of the answer directly
-                    //...something
+                    // organizer
+                    if (!poll.organizer.equals(this.name)) {
+                        // I assume that the organizer participates in the meeting that he creates himself so if organizer = name of the account we keep the date of the answer directly
+                        //...something
+                    }
+                    poll.closed = true;
+                    //problem : poll with no description => don't work
+                } else {
+                    //CLOSE + NOT FINAL ANSWER SELECTED
+
+                    tempTab = StringUtils.substringsBetween(page.asXml(), "<td class=\"sum", "</td>");
+
+                    int[] tempAnswers = new int[tempTab.length];
+                    for (int order = 0; order<tempTab.length; order++) {
+                        tempAnswers[order] = Integer.parseInt(StringUtils.substringAfter(tempTab[order], ">").trim());
+                    }
+
+                    temp = StringUtils.substringBetween(page.asXml(),"<th class=\"first\"/>","</tr>");
+                    for(int datapos = 0; datapos<tempTab.length; datapos++) {
+                        temp2 = StringUtils.substringBetween(temp,"data-position=\""+datapos+"\">","</th>");
+                        if(temp2 == null) break; // = no more proposition
+
+                        //get start and finish date
+                        temp3 = StringUtils.substringBetween(temp2,"<span data-timestamp=","-");
+                        long timeStart = Long.parseLong(StringUtils.substringBetween(temp3,"\"","\""));
+                        temp3 = StringUtils.substringBetween(temp2,"<br/>"," data-localize=\"time\">");
+                        long timeFinish = Long.parseLong(StringUtils.substringBetween(temp3,"\"","\""));
+
+                        //System.out.println("TESTING : " + tsToDate(timeStart) + " " + tsToHour(timeStart) + " " + tsToHour(timeFinish));
+
+                        //if organizer = name of the user -> get all the props : YES
+                        if(poll.organizer.equals(this.name)) {
+                            // ADD TO A PROP
+                            Props prop = new Props(timezone, tsToDate(timeStart), tsToHour(timeStart), tsToHour(timeFinish), yesAnswer);
+                            poll.props.add(prop);
+                        } else {
+                            //else get Yes and Maybe
+                            if(tempAnswers[datapos]==0){ // 0 = NO
+                                // ADD TO A PROP
+                                Props prop = new Props(timezone, tsToDate(timeStart), tsToHour(timeStart), tsToHour(timeFinish), noAnswer);
+                                poll.props.add(prop);
+                            } else { // 1 or more = YES
+                                // ADD TO A PROP
+                                Props prop = new Props(timezone, tsToDate(timeStart), tsToHour(timeStart), tsToHour(timeFinish), yesAnswer);
+                                poll.props.add(prop);
+                            } // MAYBE ????
+                        }
+                        poll.closed = true; // poll closed
+                    }
                 }
-                poll.closed = true;
-                //problem : poll with no description => don't work
             } else {
                 //OPEN
 
@@ -419,8 +470,8 @@ public class EventoScrapper extends Scrapper{
         client.getOptions().setJavaScriptEnabled(true);
         client.getOptions().setUseInsecureSSL(true);
         client.getOptions().setThrowExceptionOnScriptError(false); // remove javascript errors
-        EventoScrapper e = new EventoScrapper();
-        e.connect(client,"atharrea","fdqj8t,\\g(","INSA Rennes");
+        EventoScrapper e = new EventoScrapper("atharrea","fdqj8t,\\g(","INSA Rennes");
+        e.connect(client);
         e.getNameEmail(client);
         e.getPolls(client);
         String path = "C:\\Users\\HDrag\\Documents\\GitHub\\EP\\";
