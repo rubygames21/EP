@@ -32,12 +32,12 @@ public class FramadateScrapper extends Scrapper {
     }
 
     @Override
-    public void createICS(WebClient webClient) throws IOException {
+    public void createICS(WebClient webClient, String path) throws IOException {
         if (names.isEmpty()) {
             System.out.println("pas de noms donc impossible de crée un ICS");
         } else {
             for (FramadatePoll fpoll : fpolls) {
-                fpoll.createICS(webClient, names);
+                fpoll.createICS(webClient, names, path);
             }
         }
     }
@@ -46,12 +46,12 @@ public class FramadateScrapper extends Scrapper {
         names.add(name);
     }
 
-    public void createAndMergeAllICS(WebClient webClient)throws IOException{
+    public void createAndMergeAllICS(WebClient webClient, String path)throws IOException{
         if (names.isEmpty()) {
             System.out.println("pas de noms donc impossible de crée un ICS");
         }else {
             if (fpolls.size() == 1) {
-                createICS(webClient);
+                createICS(webClient, path);
             } else {
                 FramadatePoll framadatePoll = new FramadatePoll();
                 System.out.println("dommage2");
@@ -67,7 +67,7 @@ public class FramadateScrapper extends Scrapper {
                         System.out.println(p.toString());
                     }
                 }
-                framadatePoll.justCreateICS(webClient, names);
+                framadatePoll.justCreateICS(webClient, names, path);
             }
         }
     }

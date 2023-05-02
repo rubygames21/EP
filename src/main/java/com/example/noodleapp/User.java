@@ -22,15 +22,16 @@ public class User {
         webClient.getOptions().setCssEnabled(false);
     }
 
-    public void createAllICS() throws IOException {
+    public void createAllICS(String path) throws IOException {
         if(framadateScrapper == null){
             System.out.println("add a FScrapper before creating ics");
         }
         else {
             if(mergeICS) {
-                framadateScrapper.createAndMergeAllICS(webClient);
+                framadateScrapper.createAndMergeAllICS(webClient, path);
             }else{
-                framadateScrapper.createICS(webClient);
+                framadateScrapper.createICS(webClient, path);
+
             }
         }
     }
@@ -67,6 +68,7 @@ public class User {
 
     /*public static void main(String[] args) throws IOException {
         User user = new User();
+        //user.path = "C:\Users\HDrag\Documents\GitHub\EP\";
         user.mergeICS = true;
         *//*user.addFPoll("https://framadate.org/hQXzCKULUtih3S3m");*//*
         user.addFPoll("https://framadate.org/WKrK67UXBcJNRRHf");

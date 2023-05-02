@@ -26,10 +26,7 @@ enum pollAnswer{
     Maybe
 }
 
-public class FramadatePoll extends Poll{
-    //a revoir cette modélisation
-    /* Map<String, Map<Props,pollAnswer>> data;*/
-    //List des propostitions et des reponses associées
+public class FramadatePoll extends Poll {
 
 
     public FramadatePoll(String url){
@@ -268,8 +265,10 @@ public class FramadatePoll extends Poll{
         return allMaybePresentParticipant;
     }
 
-    public void propsToICS(Set<String> names) {
-        File calendarICS = new File ("/home/ubuntu/PERSO.local/INSA/3INFO/EP/"+ getPollID(url) + "_calendar.ics");
+
+    public void propsToICS(Set<String> names, String path) {
+        File calendarICS = new File (path + getPollID(url) + "_calendar.ics");
+        // E:\INSA\3A\EtudePratique\Noodle\NoodleApp\
         if (!calendarICS.exists()) {
             try {
                 calendarICS.createNewFile();
@@ -322,14 +321,14 @@ public class FramadatePoll extends Poll{
 
 
 
-    public void createICS(WebClient wb,Set<String> names) throws IOException {
+    public void createICS(WebClient wb,Set<String> names, String path) throws IOException {
         fillPoll(wb);
-        propsToICS(names);
+        propsToICS(names, path);
     }
 
-    public void justCreateICS(WebClient webClient,Set<String> names)throws IOException {
+    public void justCreateICS(WebClient webClient,Set<String> names, String path)throws IOException {
         this.url = "https://framadate.org/testMerge";
-        propsToICS(names);
+        propsToICS(names, path);
     }
 
 

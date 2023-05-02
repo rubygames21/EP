@@ -1,0 +1,70 @@
+BEGIN:VCALENDAR
+PRODID:-//Ben Fortuna//iCal4j 1.0//EN
+VERSION:2.0
+BEGIN:VEVENT
+DTSTAMP:20230423T150101Z
+DTSTART:20221210T100000
+DTEND:20221210T110000
+SUMMARY:Yes | Test
+TZID:Europe/Paris
+DESCRIPTION:Test test Organizer : Marie Dubouays De La Begassiere URL : https://evento.renater.fr/survey/results/gsj5vz8k\n
+STATUS:CONFIRMED
+URL:https://evento.renater.fr/survey/results/gsj5vz8k
+UID:50b966d0-69a9-4178-a41b-7079d5fbf1e7
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230423T150101Z
+DTSTART:20230415T190000
+DTEND:20230415T200000
+SUMMARY:[TENTATIVE] Yes | QuoiCOUBEH
+TZID:Europe/Paris
+DESCRIPTION:QuoiCOUBEH Avez-vous déjà été victime du QUOICOUBEH ? Organizer : Marie Dubouays De La Begassiere URL : https://evento.renater.fr/survey/results/x7800bm5\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/x7800bm5
+UID:de90b01d-0b5f-48b1-a245-e2de4550d531
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230423T150101Z
+DTSTART:20230422T180000
+DTEND:20230422T200000
+SUMMARY:Yes | Test01
+TZID:Europe/Paris
+DESCRIPTION:Test01 abc Organizer : Amory Tharreau URL : https://evento.renater.fr/survey/results/9szitxm1\n
+STATUS:CONFIRMED
+URL:https://evento.renater.fr/survey/results/9szitxm1
+UID:958512e3-f866-4bc6-ba05-c8ca0548470b
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230423T150101Z
+DTSTART:20230407T200000
+DTEND:20230407T230000
+SUMMARY:[TENTATIVE] Yes | Timothée
+TZID:Europe/Paris
+DESCRIPTION:Timothée Pour ou contre le lavage de Timothée ? Organizer : Marie Dubouays De La Begassiere URL : https://evento.renater.fr/survey/results/byi7yj62\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/byi7yj62
+UID:3cdb51f7-aaad-49da-8f14-45481648d68b
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230423T150101Z
+DTSTART:20230412T190000
+DTEND:20230412T200000
+SUMMARY:[TENTATIVE] Yes | bonsoir
+TZID:Europe/Paris
+DESCRIPTION:bonsoir ceci est un test Organizer : Amory Tharreau URL : https://evento.renater.fr/survey/results/u7hf199d\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/u7hf199d
+UID:ffce7ded-46ec-4b72-a84f-2f5207612e13
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230423T150101Z
+DTSTART:20230414T190000
+DTEND:20230414T200000
+SUMMARY:[TENTATIVE] Yes | bonsoir
+TZID:Europe/Paris
+DESCRIPTION:bonsoir ceci est un test Organizer : Amory Tharreau URL : https://evento.renater.fr/survey/results/u7hf199d\n
+STATUS:TENTATIVE
+URL:https://evento.renater.fr/survey/results/u7hf199d
+UID:1c6be0c6-65bd-4c83-9eac-343681d5c604
+END:VEVENT
+END:VCALENDAR
