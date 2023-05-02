@@ -1,5 +1,4 @@
 package com.example.noodleapp;
-
 import java.util.List;
 
 public abstract class Poll {
@@ -13,6 +12,4 @@ public abstract class Poll {
 
     public Poll(){
     }
-
-
 }

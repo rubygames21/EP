@@ -22,15 +22,15 @@ public class User {
         webClient.getOptions().setCssEnabled(false);
     }
 
-    public void createAllICS(String path) throws IOException {
+    public void createAllICS() throws IOException {
         if(framadateScrapper == null){
             System.out.println("add a FScrapper before creating ics");
         }
         else {
             if(mergeICS) {
-                framadateScrapper.createAndMergeAllICS(webClient, path);
+                framadateScrapper.createAndMergeAllICS(webClient, pathFiles);
             }else{
-                framadateScrapper.createICS(webClient, path);
+                framadateScrapper.createICS(webClient, pathFiles);
 
             }
         }
