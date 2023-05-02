@@ -6,6 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 public class Launcher {
     public static void main (String[] args){
-        HelloApplication.main(args);
+        NoodleApplication.main(args);
     }
 }

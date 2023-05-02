@@ -2,6 +2,7 @@ package com.example.noodleapp;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,6 +71,21 @@ public class FramadateScrapper extends Scrapper {
                 framadatePoll.justCreateICS(webClient, names, path);
             }
         }
+    }
+
+    // pour recuperer les url
+    public String toString() {
+        String res = "(";
+        for (FramadatePoll f : fpolls) {
+            res += f.url + " ";
+        }
+        res += ")";
+        return res;
+    }
+
+    //fonction utile pour homeViewController
+    public List<FramadatePoll> getFpolls(){
+        return this.fpolls;
     }
 }
 
