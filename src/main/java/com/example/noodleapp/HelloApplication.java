@@ -12,17 +12,43 @@ import java.util.List;
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+
+    static User user;
     @Override
     public void start(Stage stage) throws IOException {
+        createUser();
+
+        //mes sondages
+        user.addFPoll("https://framadate.org/cYOX1OO8EZlDVuTh");
+        user.addFPoll("https://framadate.org/LDJ5k3TN3j3AgDPK");
+        user.addFPoll("https://framadate.org/TL4Dc1Lqee1rxUFQ");
+        //mes noms
+        user.addFName("Clem");
+        user.addFName("Clement");
+        user.addFName("adol");
+
+
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("homeView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Noodle");
         stage.setScene(scene);
         stage.show();
+              //provisoire car l'idéal serait de récupérer le user existant
+        //this.user.setMergeICS(true);
     }
 
-    public static void main(String[] args) {
+    private void createUser() {
+        user=new User();
+    }
+
+    public static void main(String[] args) {    //inutile
+
         launch();
+
+    }
+
+    public static User getUser() {
+        return user;
     }
 
     /*

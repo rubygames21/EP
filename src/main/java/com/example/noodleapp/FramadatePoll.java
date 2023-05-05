@@ -39,11 +39,32 @@ public class FramadatePoll {
 
     public FramadatePoll(String url){
         this.url = url;
+        this.ID= this.getPollID(url);
+
     }
     public FramadatePoll(){
 
     }
 
+    public List<Props> getProps() {
+        return props;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getID() {
+        return ID;
+    }
 
     public void addProps(List<Props> p){
         for(Props prop:p){

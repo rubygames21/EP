@@ -65,6 +65,30 @@ public class User {
         }
     }
 
+    public FramadateScrapper getFramadateScrapper() {
+        return framadateScrapper;
+    }
+
+    public WebClient getWebClient() {
+        return webClient;
+    }
+
+    public List<Scrapper> getScrappers() {
+        return scrappers;
+    }
+
+    public String getPathFiles() {
+        return pathFiles;
+    }
+
+    public Boolean getMergeICS() {
+        return mergeICS;
+    }
+    public void setMergeICS(Boolean b){
+        this.mergeICS=b;
+        System.out.println("Merge ICS modifié");
+    }
+
     /*public static void main(String[] args) throws IOException {
         User user = new User();
         user.mergeICS = true;

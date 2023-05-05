@@ -24,6 +24,10 @@ public class Props {
 
                     '}';
         }
+
+        public String dateDisplay(){
+            return day+"/"+month+"/"+year;
+        }
     }
 
     public static class Hour {
@@ -39,6 +43,12 @@ public class Props {
                     ", second=" + second +
                     '}';
         }
+        public String hourDisplay(){
+            if(minute==0){
+                return hour+"h";
+            }
+            return hour+"h"+minute;
+        }
     }
 
     @Override
@@ -49,4 +59,8 @@ public class Props {
                 eachAnswer.toString()+
                 '}';
     }
+
+
+    //affichage de la date de la prop sur l'écran d'accueil
+
 }
