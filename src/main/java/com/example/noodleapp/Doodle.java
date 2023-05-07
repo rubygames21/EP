@@ -188,7 +188,7 @@ public class Doodle extends Scrapper{
             reunions.addAll(d2.reunions);
 
         }
-        else if(links.size() > 50){
+        else if(links.size() >= 10 && links.size() < 20){
             driver.quit();
             ArrayList<String> list1 = new ArrayList<String>();
             ArrayList<String> list2 = new ArrayList<String>();
@@ -265,7 +265,7 @@ public class Doodle extends Scrapper{
             reunions.addAll(d3.reunions);
 
         }
-        else if(links.size() > 20) {
+        else if(links.size() >= 20 && links.size() < 30) {
             driver.quit();
             ArrayList<String> list1 = new ArrayList<String>();
             ArrayList<String> list2 = new ArrayList<String>();
@@ -357,7 +357,7 @@ public class Doodle extends Scrapper{
             reunions.addAll(d4.reunions);
         }
 
-        else if(links.size() >= 10 && links.size() <= 20) {
+        else if(links.size() >= 30) {
             driver.quit();
             List<List<String>> lists = new ArrayList<>();
             for (int i = 0; i < 7; i++) {
