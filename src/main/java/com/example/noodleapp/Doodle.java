@@ -58,7 +58,7 @@ public class Doodle extends Scrapper{
         options.addArguments("--headless");
         String driverPath = "src/chromedriver.exe";
         System.setProperty("webdriver.chrome.driver", driverPath);
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         actions = new Actions(driver);
         reunions = new ArrayList<>();
     }
