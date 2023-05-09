@@ -165,7 +165,7 @@ public class NewUserController implements Initializable {
             cas = eventoCAS.getText();
 
             //création du scrapper
-            EventoScrapper scrapperEvento = new EventoScrapper("cadol","ow4_ph#pn<","INSA Rennes");
+            EventoScrapper scrapperEvento = new EventoScrapper("cadol","myPassword","INSA Rennes");
             scrapperEvento.start(HelloApplication.user.webClient);
             HelloApplication.user.scrappers.add(scrapperEvento);
 
