@@ -182,7 +182,7 @@ public class NewUserController implements Initializable {
 
     public void goBack(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("helloView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("homeView.fxml"));
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.show();

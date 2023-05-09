@@ -11,11 +11,21 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+=
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,9 +39,16 @@ public class HomeViewController implements ChangeListener<Integer> {
 
     private User user;
     private ObservableList<String> framPollsList;
+=======
+import java.util.ArrayList;
+
+
+public class HomeController implements ChangeListener<Integer>{
+>>>>>>> d17def08f82d0f63a5cffaec00000085989da788:src/main/java/com/example/noodleapp/HomeController.java
 
     private ObservableList<Integer> eventoPollsList;
     private ObservableList<Integer> doodlePollsList;
+
     @FXML
     private TreeView<String> treeViewFramadate;
 
@@ -39,13 +56,12 @@ public class HomeViewController implements ChangeListener<Integer> {
     private ListView<Integer> listViewEvento;
     @FXML
     private ListView<Integer> listViewDoodle;
-
     @FXML
     private Label timeSync;
-
     @FXML
     private VBox centerVBox;
     @FXML
+<<<<<<< HEAD:src/main/java/com/example/noodleapp/HomeViewController.java
     private ImageView logo;
 
     @FXML
@@ -60,6 +76,12 @@ public class HomeViewController implements ChangeListener<Integer> {
         logo.setImage(image);*/
 
         //HelloApplication.getUser().setMergeICS(true);
+=======
+    private MenuItem menuNewUser;
+
+    @FXML
+    public void initialize(){       //se lance dès le chargement de la scène automatique
+>>>>>>> d17def08f82d0f63a5cffaec00000085989da788:src/main/java/com/example/noodleapp/HomeController.java
 
         //recupération de la liste de sondages dans FramadateSrapper
 
@@ -194,13 +216,14 @@ public class HomeViewController implements ChangeListener<Integer> {
         loop4.play();
 
 
-    }
 
+    }
 
     @Override
     public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
         System.out.println("Changement effectué");
     }
+
 
     public void mergeICS(MouseEvent actionEvent) {
         if (mergeButton.isSelected()) {
@@ -209,6 +232,16 @@ public class HomeViewController implements ChangeListener<Integer> {
         } else {
             user.setMergeICS(false);
             System.out.println(user.getMergeICS());
+=
+    public void switchSceneToNewUser(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newUserView.fxml"));
+            Stage stage = (Stage) menuNewUser.getParentPopup().getOwnerWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
