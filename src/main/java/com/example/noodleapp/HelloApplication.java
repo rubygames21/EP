@@ -6,33 +6,29 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
-<<<<<<< HEAD:src/main/java/com/example/noodleapp/HelloApplication.java
-import java.io.IOException;
+import java.text.ParseException;
 
 public class HelloApplication extends Application {
 
     static User user;
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws Exception {
+        //création d'un user
         createUser();
 
-        //mes sondages
+
+
+
+        //framadate
         user.addFPoll("https://framadate.org/cYOX1OO8EZlDVuTh");
         user.addFPoll("https://framadate.org/LDJ5k3TN3j3AgDPK");
         user.addFPoll("https://framadate.org/TL4Dc1Lqee1rxUFQ");
-        //mes noms
         user.addFName("Clem");
         user.addFName("Clement");
         user.addFName("adol");
 
-
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("homeView.fxml"));
 
-public class NoodleApplication extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(NoodleApplication.class.getResource("homeView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Noodle");
         stage.setScene(scene);
@@ -46,9 +42,7 @@ public class NoodleApplication extends Application {
     }
 
     public static void main(String[] args) {    //inutile
-
         launch();
-
     }
 
     public static User getUser() {

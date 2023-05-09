@@ -12,18 +12,17 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.noodleapp.HomeViewController"
-            prefHeight="500" prefWidth="700">
+            prefHeight="400" prefWidth="600">
     <top>
         <MenuBar>
             <menus>
-                <Menu fx:id="myAccounts" text="Mes comptes">
+                <Menu fx:id="file" text="Fichier">
                     <items>
-                        <MenuItem fx:id="menuDoodle" text="Doodle" />
-                        <MenuItem fx:id="menuEvento" text="Evento" />
-                        <MenuItem fx:id="menuFramadate" text="Framadate"/>
+                        <MenuItem fx:id="menuNewUser" text="Ajouter un compte" onAction="#switchSceneToNewUser"/>
+                        <MenuItem fx:id="menuManageAccounts" text="Mes comptes" onAction="#switchSceneToManageAccounts"/>
                     </items>
                 </Menu>
-                <Menu fx:id="myExport" text="A propos">
+                <Menu fx:id="byTheWay" text="A propos" onAction="#switchToByTheWay">
                 </Menu>
             </menus>
         </MenuBar>
@@ -38,7 +37,7 @@
             <ImageView fx:id="logo" />
             <!-- pour faire un espace-->
             <Label text=" " style="-fx-font-size: 20"/>
-            <TreeView fx:id="treeViewFramadate" prefHeight="150" prefWidth="500"  />
+            <TreeView fx:id="treeView" prefHeight="150" prefWidth="500"  />
             <!-- pour faire un espace-->
             <Label text=" " style="-fx-font-size: 20"/>
 

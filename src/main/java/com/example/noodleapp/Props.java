@@ -8,12 +8,37 @@ public class Props {
     TimeZone timeZone;
     Date date;
     Hour hour;
+    Hour hourEnd;
     Map<String ,pollAnswer > eachAnswer;
+
+
+    public Props() {
+    }
+
+
+    public Props(TimeZone timeZone, Props.Date date, Props.Hour hour, Props.Hour hourEnd, Map<String, pollAnswer> eachAnswer) {
+        this.timeZone = timeZone;
+        this.date = date;
+        this.hour = hour;
+        this.hourEnd = hourEnd;
+        this.eachAnswer = eachAnswer;
+
+    }
 
     public static class Date {
         int month;
         int day;
         int year;
+
+
+        public Date() {
+        }
+
+        public Date(int month, int day, int year) {
+            this.month = month;
+            this.day = day;
+            this.year = year;
+        }
 
         @Override
         public String toString() {
@@ -34,6 +59,16 @@ public class Props {
         int hour;
         int minute;
         int second;
+
+
+        public Hour() {
+        }
+
+        public Hour(int hour, int minute, int second) {
+            this.hour = hour;
+            this.minute = minute;
+            this.second = second;
+        }
 
         @Override
         public String toString() {

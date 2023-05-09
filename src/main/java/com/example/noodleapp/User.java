@@ -1,6 +1,7 @@
 package com.example.noodleapp;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ public class User {
         this.webClient = new WebClient(BrowserVersion.FIREFOX);
         webClient.getOptions().setJavaScriptEnabled(false);
         webClient.getOptions().setCssEnabled(false);
+        this.scrappers=new ArrayList<>();
     }
 
     public void createAllICS() throws IOException {
@@ -28,9 +30,9 @@ public class User {
         }
         else {
             if(mergeICS) {
-                framadateScrapper.createAndMergeAllICS(webClient);
+                framadateScrapper.createAndMergeAllICS(webClient,this.pathFiles);
             }else{
-                framadateScrapper.createICS(webClient);
+                framadateScrapper.createICS(webClient,this.pathFiles);
             }
         }
     }

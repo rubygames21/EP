@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ResourceBundle;
 
 public class NewUserController implements Initializable {
@@ -30,11 +31,11 @@ public class NewUserController implements Initializable {
     @FXML
     private Label passwordLabel;
     @FXML
-    private TextField passwordText;
+    private PasswordField passwordText;
     @FXML
     private Label eventoCASLabel;
     @FXML
-    private ChoiceBox<String> eventoCASChoiceBox;
+    private TextField eventoCAS;
     @FXML
     private Label framadateURLLabel;
     @FXML
@@ -59,17 +60,23 @@ public class NewUserController implements Initializable {
     private String cas;
     private String url;
     private String name;
-    private User user;
+    private static User user;
 
     public void setUser(User user) {
-        this.user = user;
+        user = user;
+    }
+
+    public static User getUser(){
+        return user;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        eventoCASChoiceBox.getItems().add("INSA Rennes");
-        eventoCASChoiceBox.getItems().add("IRISA");
-        eventoCASChoiceBox.getItems().add("INRIA");
+       // eventoCASChoiceBox.getItems().add("INSA Rennes");
+       // eventoCASChoiceBox.getItems().add("IRISA");
+        //eventoCASChoiceBox.getItems().add("INRIA");
+        setUser(HelloApplication.getUser());
+        System.out.println("rentré dans initialize");
     }
 
     public void getInfos(ActionEvent event) {
@@ -79,7 +86,7 @@ public class NewUserController implements Initializable {
             loginText.setVisible(true);
             passwordText.setVisible(true);
             eventoCASLabel.setVisible(false);
-            eventoCASChoiceBox.setVisible(false);
+            eventoCAS.setVisible(false);
             framadateURLLabel.setVisible(false);
             framadateURLText.setVisible(false);
             framadateNameText.setVisible(false);
@@ -97,7 +104,7 @@ public class NewUserController implements Initializable {
             loginText.setVisible(true);
             passwordText.setVisible(true);
             eventoCASLabel.setVisible(true);
-            eventoCASChoiceBox.setVisible(true);
+            eventoCAS.setVisible(true);
             framadateURLLabel.setVisible(false);
             framadateURLText.setVisible(false);
             framadateNameText.setVisible(false);
@@ -118,7 +125,7 @@ public class NewUserController implements Initializable {
             loginText.setVisible(false);
             passwordText.setVisible(false);
             eventoCASLabel.setVisible(false);
-            eventoCASChoiceBox.setVisible(false);
+            eventoCAS.setVisible(false);
             framadateURLLabel.setVisible(true);
             framadateURLText.setVisible(true);
             framadateNameText.setVisible(true);
@@ -132,43 +139,66 @@ public class NewUserController implements Initializable {
         }
     }
 
-    public void submit(ActionEvent event) {
+    public void submit(ActionEvent event) throws Exception {
         if (doodleButton.isSelected()) {
+            //récupération des données
             login = loginText.getText();
-            loginText.clear();
             password = passwordText.getText();
+
+            //création du scrapper
+            Doodle scrapperDoodle = new Doodle();
+            scrapperDoodle.mainDoodle(login,password);
+            HelloApplication.user.scrappers.add(scrapperDoodle);
+
+            confirmation.setText("Compte Doodle ajouté");
+            confirmation.setVisible(true);
+
+            loginText.clear();
             passwordText.clear();
             System.out.println(login);
             System.out.println(password);
         }
         else if (eventoButton.isSelected()) {
+            //récupération des données
             login = loginText.getText();
-            loginText.clear();
             password = passwordText.getText();
+            cas = eventoCAS.getText();
+
+            //création du scrapper
+            EventoScrapper scrapperEvento = new EventoScrapper("cadol","ow4_ph#pn<","INSA Rennes");
+            scrapperEvento.start(HelloApplication.user.webClient);
+            HelloApplication.user.scrappers.add(scrapperEvento);
+
+            confirmation.setText("Compte Evento ajouté");
+            confirmation.setVisible(true);
+
+            loginText.clear();
             passwordText.clear();
-            cas = eventoCASChoiceBox.getValue();
+            eventoCAS.clear();
+
             System.out.println(login);
             System.out.println(password);
             System.out.println(cas);
         }
+        System.out.println(HelloApplication.user.scrappers);
     }
 
     public void framadateSubmitName(ActionEvent event) {
         name = framadateNameText.getText();
         framadateNameText.clear();
-        user.addFName(name.toLowerCase());
-        confirmation.setText("Name added");
+        HelloApplication.user.addFName(name);
+        confirmation.setText("Nom ajouté");
         confirmation.setVisible(true);
-        System.out.println(user.framadateScrapper.names.toString());
+        System.out.println(HelloApplication.user.framadateScrapper.names.toString());
     }
 
     public void framadateSubmitURL(ActionEvent event) {
         url = framadateURLText.getText();
         framadateURLText.clear();
-        user.addFPoll(url);
-        confirmation.setText("URL added");
+        HelloApplication.user.addFPoll(url);
+        confirmation.setText("URL ajouté");
         confirmation.setVisible(true);
-        System.out.println(user.framadateScrapper.toString());
+        System.out.println(HelloApplication.user.framadateScrapper.toString());
     }
 
     public void setBoolMergeYes(ActionEvent event){
@@ -188,6 +218,28 @@ public class NewUserController implements Initializable {
             stage.show();
         }
         catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void switchSceneToNewUser(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newUserView.fxml"));
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void switchSceneToManageAccounts(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("manageAccountsView.fxml"));
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

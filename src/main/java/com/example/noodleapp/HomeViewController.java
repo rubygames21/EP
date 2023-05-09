@@ -4,20 +4,19 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 
-
+import javafx.scene.image.Image;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-=
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -27,11 +26,11 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 
@@ -39,18 +38,13 @@ public class HomeViewController implements ChangeListener<Integer> {
 
     private User user;
     private ObservableList<String> framPollsList;
-=======
-import java.util.ArrayList;
 
-
-public class HomeController implements ChangeListener<Integer>{
->>>>>>> d17def08f82d0f63a5cffaec00000085989da788:src/main/java/com/example/noodleapp/HomeController.java
 
     private ObservableList<Integer> eventoPollsList;
     private ObservableList<Integer> doodlePollsList;
 
     @FXML
-    private TreeView<String> treeViewFramadate;
+    private TreeView<String> treeView;
 
     @FXML
     private ListView<Integer> listViewEvento;
@@ -61,135 +55,164 @@ public class HomeController implements ChangeListener<Integer>{
     @FXML
     private VBox centerVBox;
     @FXML
-<<<<<<< HEAD:src/main/java/com/example/noodleapp/HomeViewController.java
     private ImageView logo;
 
     @FXML
     private RadioButton mergeButton;
 
     @FXML
-    public void initialize() throws IOException {       //se lance dès le chargement de la scène automatique
-
-        //chargement de l'image /!\ exception
-       /* FileInputStream inputStream=new FileInputStream("@../../../Image/logo.png");
-        Image image = new Image(inputStream);
-        logo.setImage(image);*/
-
-        //HelloApplication.getUser().setMergeICS(true);
-=======
     private MenuItem menuNewUser;
 
-    @FXML
-    public void initialize(){       //se lance dès le chargement de la scène automatique
->>>>>>> d17def08f82d0f63a5cffaec00000085989da788:src/main/java/com/example/noodleapp/HomeController.java
+    public void initialize() throws IOException {       //se lance dès le chargement de la scène automatique
+        //image
+        //Image jaune = new Image(HomeViewController.class.getRessource("serpent_ia2.png").toExternalForm());
 
-        //recupération de la liste de sondages dans FramadateSrapper
 
-        //on regarde si la classe User a déjà un Framadate scrapper, sinon on en créé un
 
-        //comment récupérer le User existant?
+
         this.user = HelloApplication.getUser();
 
-        ArrayList<String> listeFram = new ArrayList<>();
+        //création de la treeView
 
-        //TODO : mettre ca dans le modèle, pas dans le controleur
+        TreeItem<String> rootItem = new TreeItem<>();   //création de la racine, un TreeItem "virtuel" qu'on cache
+        treeView.setRoot(rootItem);
+        treeView.setShowRoot(false);
+        treeView.getRoot().setExpanded(true);  //on veut que les enfants de la racine soient toujours visibles, pas besoin de cliquer pour les voir
 
-        for (FramadatePoll fp : user.getFramadateScrapper().getFpolls()) {
-            fp.title = fp.getTitle(user.webClient);
 
-            //on recup les prop
-            fp.fillPoll(user.webClient); //permet de remplir l'attribut prop --> à changer
-            String tmp = "[";
-            for (Props p : fp.getProps()) {
-                pollAnswer myVote = fp.getMyVote(p, user.framadateScrapper.names);
-                //on ne garde que les oui et peut etre
-                if (myVote == pollAnswer.Yes || myVote == pollAnswer.Maybe) {
-                    tmp +=  p.date.dateDisplay() + ", "+ p.hour.hourDisplay()+" : " + myVote+" - ";
+        //remplissage de la TreeView à partir de chaque scrapper
+
+
+        int nbScrapper = -1;     //utile pour rerouver l'indice des scrapper dans le .getChildren() du treeView
+
+        //traitement du FramadateScrapper
+
+        if(user.framadateScrapper!=null){
+            nbScrapper++;
+
+            //ajout du scrapper à la treeView
+            treeView.getRoot().getChildren().add(new TreeItem<>("Framadate"));
+
+            //création liste de sondages
+            ArrayList<String> listeFram = new ArrayList<>();
+
+            for (FramadatePoll fp : user.getFramadateScrapper().getFpolls()) {
+                fp.title = fp.getTitle(user.webClient);
+
+                //récupération des props
+                fp.fillPoll(user.webClient); //permet de remplir l'attribut prop --> à changer
+                String tmp = "[";
+                for (Props p : fp.getProps()) {
+                    pollAnswer myVote = fp.getMyVote(p, user.framadateScrapper.names);
+                    //on ne garde que les oui et peut etre
+                    if (myVote == pollAnswer.Yes || myVote == pollAnswer.Maybe) {
+                        tmp += p.date.dateDisplay() + ", " + p.hour.hourDisplay() + " : " + myVote + " - ";
+                    }
+                }
+                //on enlève le dernier espace en trop
+                tmp = tmp.substring(0, tmp.length() - 3);
+                tmp += "]";
+                String display = fp.getTitle() + " " + tmp;
+                listeFram.add(display);
+            }
+            //tri par ordre alphabétique
+            Collections.sort(listeFram);
+
+            //ajout à SONDAGES FRAMADATE
+            for (String s : listeFram) {
+                treeView.getRoot().getChildren().get(nbScrapper).getChildren().add(new TreeItem<>(s));
+            }
+        }
+
+        //traitement des autres scrapper (hors Framadate)
+
+        for(Scrapper scrapper : user.scrappers){
+            nbScrapper++;
+
+            //cas Doodle
+
+            if(scrapper instanceof Doodle){
+
+                //ajout du scrapper à la TreeView
+                String nameScrapper = ((Doodle) scrapper).display();        // pour savoir comment l'appeler sur l'affichage
+                treeView.getRoot().getChildren().add(new TreeItem<>(nameScrapper));
+
+                //création liste de sondages
+                ArrayList<String> listeDoodle = new ArrayList<>();      //liste des sondages
+
+                for (DoodlePoll dp : ((Doodle)user.scrappers.get(nbScrapper-1)).getReunionsGarde()) {  //reunionGarde supprime déjà les "non"
+
+                    //on recup les prop
+                    String tmp = "[";
+                    for (PropsDoodle p : dp.getPropsDoodleList()) {       //prop ou propdoodle
+                        //valeur de notre réponse
+                        pollAnswer myVote = p.getEachAnswer().get("MOI");      //bizzar l'implementtation de PropDoodle avec une map à un seul couple
+                        tmp += p.getDateConforme().dateDisplay() + ", " + p.getHourDebutConforme().hourDisplay() + " : " + myVote + " - ";
+                    }
+                    //on enlève le dernier espace en trop
+                    tmp = tmp.substring(0, tmp.length() - 3);
+                    tmp += "]";
+                    String display = dp.gettitle() + " " + tmp;
+                    listeDoodle.add(display);
+                }
+                //tri par ordre alphabétique
+                Collections.sort(listeDoodle);
+
+                //on ajoute chaque sondage à la treeView
+                for(String s: listeDoodle){
+                    treeView.getRoot().getChildren().get(nbScrapper).getChildren().add(new TreeItem<>(s));
                 }
             }
-            //on enlève le dernier espace en trop
-            tmp=tmp.substring(0,tmp.length()-3);
-            tmp+="]";
-            String display = fp.getTitle() + " " + tmp;
-            listeFram.add(display);
-        }
 
-        //tri par ordre alphabétique
-        Collections.sort(listeFram);
+            //cas Evento
 
+            if (scrapper instanceof EventoScrapper){
 
-    //création de la treeView
+                //ajout du scrapper à la TreeView
+                String nameScrapper = ((EventoScrapper) scrapper).display();        // pour savoir comment l'appeler sur l'affichage
+                treeView.getRoot().getChildren().add(new TreeItem<>(nameScrapper));
 
-        //Créer les TreeItems à partir de la liste
-        //création de la racine, un TreeItem "virtuel" qu'on cache
-        TreeItem<String> rootItem = new TreeItem<>();
-        treeViewFramadate.setRoot(rootItem);
-        treeViewFramadate.setShowRoot(false);
+                //création liste de sondages
+                ArrayList<String> listeEvento   = new ArrayList<>();      //liste des sondages
 
-        //on veut que les enfants de la racine soient toujours visibles, pas besoin de cliquer pour les voir
-        treeViewFramadate.getRoot().setExpanded(true);
+                for (EventoPoll ep : ((EventoScrapper)user.scrappers.get(nbScrapper-1)).getEvento()) {  //reunionGarde supprime déjà les "non"
 
-        //TODO : mettre une boucle for sur une liste de comptes pour boucler dynamiquement
-        //item du "compte" framadate
-        ArrayList<String> accountsArrayList = new ArrayList<>();
-        accountsArrayList.add("Sondages Framadate");
-        accountsArrayList.add("Sondages Evento INSA");
-        accountsArrayList.add("Sondages Evento IRISA");
-        accountsArrayList.add("Sondages Doodle");
+                    //on recup les prop
+                    String tmp = "[";
+                    for (Props p : ep.props) {
+                        //valeur de notre réponse
+                        pollAnswer myVote = p.eachAnswer.get(((EventoScrapper) scrapper).name);      //bizzar l'implementtation de prop avec une map à un seul couple
+                        tmp += p.date.dateDisplay() + ", " + p.hour.hourDisplay() + " : " + myVote + " - ";
+                    }
+                    //on enlève le dernier espace en trop
+                    tmp = tmp.substring(0, tmp.length() - 3);
+                    tmp += "]";
+                    String display = ep.title + " " + tmp;
+                    listeEvento.add(display);
+                }
+                //tri par ordre alphabétique
+                Collections.sort(listeEvento);
 
-
-        for(String s : accountsArrayList){
-            treeViewFramadate.getRoot().getChildren().add(new TreeItem<>(s));
-        }
-
-
-        //ajout à SONDAGES FRAMADATE
-        for (String s : listeFram) {
-            treeViewFramadate.getRoot().getChildren().get(1).getChildren().add(new TreeItem<>(s));
-        }
-
-
-        //treeViewFramadate.refresh();
-
-
-        /*
-        framPollsList.forEach(element -> rootItem.getChildren().add(new TreeItem<>((String)element)));
-        ;
-        //Créer la TreeView et ajouter le TreeItem racine
-        treeViewFramadate = new TreeView<>(rootItem);
-         */
-
-
-
-/*
-
-        listViewEvento.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
-                //System.out.println("Vous avez sélectionné : " + newValue);
-                System.out.println("Vous avez sélectionné : " + t1);
+                //on ajoute chaque sondage à la treeView
+                for(String s: listeEvento){
+                    treeView.getRoot().getChildren().get(nbScrapper).getChildren().add(new TreeItem<>(s));
+                }
             }
-        });
 
-        listViewDoodle.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
-                System.out.println("Vous avez sélectionné : " + t1);
+            //TODO : à faire
+        }
 
-            }
-        });
-        /*fPollsList.add(1);
-        fPollsList.add(2);
-        fPollsList.add(3);
-        fPollsList.add(4);
-        fPollsList.add(5);*/
+
+
+
+
+
+
 
 
         System.out.println("Initialisation ok");
 
-        //treeViewFramadate.setItems(framPollsList);
-        //listViewEvento.setItems(eventoPollsList);
-        //listViewDoodle.setItems(doodlePollsList);
+
         //gestion du temps de synchronisation
 
         final int[] timer = {3703};
@@ -216,7 +239,6 @@ public class HomeController implements ChangeListener<Integer>{
         loop4.play();
 
 
-
     }
 
     @Override
@@ -232,15 +254,40 @@ public class HomeController implements ChangeListener<Integer>{
         } else {
             user.setMergeICS(false);
             System.out.println(user.getMergeICS());
-=
+
+
+        }
+    }
+
     public void switchSceneToNewUser(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newUserView.fxml"));
-            Stage stage = (Stage) menuNewUser.getParentPopup().getOwnerWindow();
+            Stage stage = (Stage) timeSync.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch (Exception e) {
+    }
+
+    public void switchSceneToManageAccounts(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("manageAccountsView.fxml"));
+            Stage stage = (Stage) timeSync.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void switchToByTheWay(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("byTheWay.fxml"));
+            Stage stage = (Stage) timeSync.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
